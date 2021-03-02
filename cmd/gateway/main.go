@@ -38,7 +38,7 @@ func (s *server) DeleteUser(context.Context, *tm2_proto_gateway_go.DeleteUserReq
 // create gateway service
 func main() {
 	// Create a listener on TCP port
-	lis, err := net.Listen("tcp", ":8080")
+	lis, err := net.Listen("tcp", ":8001")
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
@@ -48,7 +48,7 @@ func main() {
 	// Attach the Greeter service to the server
 	tm2_proto_gateway_go.RegisterGatewayServer(s, &server{})
 	// Serve gRPC server
-	log.Println("Serving gRPC on 0.0.0.0:8080")
+	log.Println("Serving gRPC on 0.0.0.0:8001")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
@@ -57,7 +57,7 @@ func main() {
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
-		"0.0.0.0:8080",
+		"0.0.0.0:8001",
 		grpc.WithBlock(),
 		grpc.WithInsecure(),
 	)
@@ -73,10 +73,10 @@ func main() {
 	}
 
 	gwServer := &http.Server{
-		Addr:    ":8090",
+		Addr:    ":8000",
 		Handler: gwmux,
 	}
 
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8000")
 	log.Fatalln(gwServer.ListenAndServe())
 }
