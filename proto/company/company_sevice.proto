@@ -1,0 +1,19 @@
+syntax = "proto3";
+package company;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-company-go;tm2_proto_company_go";
+
+import "company/company_rr.proto";
+
+// Company service
+service Company {
+    // Create company
+    rpc CreateCompany (CreateCompanyRequest) returns (CreateCompanyReply) {}
+    // List company
+    rpc ListCompany (ListCompanyRequest) returns (ListCompanyReply) {}
+    // Get company
+    rpc GetCompany (GetCompanyRequest) returns (GetCompanyReply) {}
+    // Update company
+    rpc UpdateCompany (UpdateCompanyRequest) returns (UpdateCompanyReply) {}
+    // Delete company
+    rpc DeleteCompany (DeleteCompanyRequest) returns (DeleteCompanyReply) {}
+}

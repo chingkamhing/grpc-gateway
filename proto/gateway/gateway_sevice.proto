@@ -1,0 +1,42 @@
+syntax = "proto3";
+package gateway;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go;tm2_proto_gateway_go";
+
+import "google/api/annotations.proto";
+import "gateway/gateway_rr.proto";
+
+// Gateway service
+service Gateway {
+    // Create user
+    rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
+        option (google.api.http) = {
+            post: "/v1/user"
+            body: "*"
+        };
+    }
+    // List user
+    rpc ListUser (ListUserRequest) returns (ListUserReply) {
+        option (google.api.http) = {
+            get: "/v1/user"
+        };
+    }
+    // Get user
+    rpc GetUser (GetUserRequest) returns (GetUserReply) {
+        option (google.api.http) = {
+            get: "/v1/user/{id}"
+        };
+    }
+    // Update user
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
+        option (google.api.http) = {
+            put: "/v1/user"
+            body: "*"
+        };
+    }
+    // Delete user
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+        option (google.api.http) = {
+            delete: "/v1/user/{id}"
+        };
+    }
+}

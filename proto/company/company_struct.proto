@@ -1,0 +1,13 @@
+syntax = "proto3";
+package company;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-company-go;tm2_proto_company_go";
+
+// Company
+
+message CompanyInfo {
+    int32 CompanyID = 1;
+    string Name = 2;
+    string PhoneNumber = 3;
+    string Address = 4;
+    string Bussiness = 5;
+}

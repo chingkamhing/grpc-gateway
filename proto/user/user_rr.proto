@@ -1,0 +1,53 @@
+syntax = "proto3";
+package user;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-user-go;tm2_proto_user_go";
+
+import "user/user_struct.proto";
+
+// User request/reply
+
+message CreateUserRequest {
+    user.UserInfo value = 1;
+}
+
+message CreateUserReply {
+    user.UserInfo value = 1;
+    string error = 2;
+}
+
+message ListUserRequest {
+    int32 offset = 1;
+    int32 limit = 2;
+}
+
+message ListUserReply {
+    repeated user.UserInfo value = 1;
+    int32 offset = 2;
+    int32 limit = 3;
+    int32 count = 4;
+    string error = 5;
+}
+
+message GetUserRequest {
+    int32 id = 1;
+}
+
+message GetUserReply {
+    user.UserInfo value = 1;
+}
+
+message UpdateUserRequest {
+    user.UserInfo value = 1;
+}
+
+message UpdateUserReply {
+    user.UserInfo value = 1;
+}
+
+message DeleteUserRequest {
+    int32 id = 1;
+}
+
+message DeleteUserReply {
+    string error = 1;
+}

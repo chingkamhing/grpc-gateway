@@ -1,0 +1,14 @@
+syntax = "proto3";
+package user;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-user-go;tm2_proto_user_go";
+
+// User
+
+message UserInfo {
+    int32 UserID = 1;
+    string Name = 2;
+    string Email = 3;
+    string PhoneNumber = 4;
+    string Address = 5;
+    int64 DateOfBirth = 6;
+}

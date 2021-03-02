@@ -1,0 +1,53 @@
+syntax = "proto3";
+package company;
+option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-company-go;tm2_proto_company_go";
+
+import "company/company_struct.proto";
+
+// Company request/reply
+
+message CreateCompanyRequest {
+    CompanyInfo value = 1;
+}
+
+message CreateCompanyReply {
+    CompanyInfo value = 1;
+    string error = 2;
+}
+
+message ListCompanyRequest {
+    int32 offset = 1;
+    int32 limit = 2;
+}
+
+message ListCompanyReply {
+    repeated CompanyInfo value = 1;
+    int32 offset = 2;
+    int32 limit = 3;
+    int32 count = 4;
+    string error = 5;
+}
+
+message GetCompanyRequest {
+    int32 id = 1;
+}
+
+message GetCompanyReply {
+    CompanyInfo value = 1;
+}
+
+message UpdateCompanyRequest {
+    CompanyInfo value = 1;
+}
+
+message UpdateCompanyReply {
+    CompanyInfo value = 1;
+}
+
+message DeleteCompanyRequest {
+    int32 id = 1;
+}
+
+message DeleteCompanyReply {
+    string error = 1;
+}
