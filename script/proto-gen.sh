@@ -3,7 +3,7 @@
 # Script to protoc generate all proto source files.
 #
 
-source global.sh
+source ./script/global.sh
 
 # either 0 argument
 NUM_ARGS=0
