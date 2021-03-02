@@ -9,15 +9,15 @@ help:
 
 .PHONY: install
 install:
-	./proto-install.sh
+	./script/proto-install.sh
 
 .PHONY: generate
 generate:
-	./proto-gen.sh
+	./script/proto-gen.sh
 
 .PHONY: gomod
 gomod:
-	./go-mod.sh
+	./script/go-mod.sh
 
 # build the source to native OS and platform
 .PHONY: build
