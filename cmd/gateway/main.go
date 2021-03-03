@@ -26,7 +26,7 @@ func main() {
 	}
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
-	conn, err := grpc.DialContext(
+	gatewayConn, err := grpc.DialContext(
 		context.Background(),
 		gatewayHost,
 		grpc.WithInsecure(),
@@ -65,7 +65,7 @@ func main() {
 
 	gwmux := runtime.NewServeMux()
 	// Register Greeter
-	err = tm2_proto_gateway_go.RegisterGatewayHandler(context.Background(), gwmux, conn)
+	err = tm2_proto_gateway_go.RegisterGatewayHandler(context.Background(), gwmux, gatewayConn)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
