@@ -69,11 +69,48 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.Lis
 	return reply, nil
 }
 func (s *server) GetUser(ctx context.Context, request *tm2_proto_gateway_go.GetUserRequest) (*tm2_proto_gateway_go.GetUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+	userReply, err := s.userClient.GetUser(ctx, &tm2_proto_user_go.GetUserRequest{Id: request.Id})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "GetUser error")
+	}
+	companyReply, err := s.companyClient.GetCompany(ctx, &tm2_proto_company_go.GetCompanyRequest{Id: request.Id})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "GetCompany error")
+	}
+	reply := &tm2_proto_gateway_go.GetUserReply{
+		Value: &tm2_proto_gateway_go.UserDetail{
+			User:    userReply.Value,
+			Company: companyReply.Value,
+		},
+	}
+	return reply, nil
 }
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.UpdateUserRequest) (*tm2_proto_gateway_go.UpdateUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+	userReply, err := s.userClient.UpdateUser(ctx, &tm2_proto_user_go.UpdateUserRequest{Value: request.Value.User})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "UpdateUser error")
+	}
+	companyReply, err := s.companyClient.UpdateCompany(ctx, &tm2_proto_company_go.UpdateCompanyRequest{Value: request.Value.Company})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "UpdateCompany error")
+	}
+	reply := &tm2_proto_gateway_go.UpdateUserReply{
+		Value: &tm2_proto_gateway_go.UserDetail{
+			User:    userReply.Value,
+			Company: companyReply.Value,
+		},
+	}
+	return reply, nil
 }
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_gateway_go.DeleteUserRequest) (*tm2_proto_gateway_go.DeleteUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+	userReply, err := s.userClient.DeleteUser(ctx, &tm2_proto_user_go.DeleteUserRequest{Id: request.Id})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "DeleteUser error: %v", userReply.Error)
+	}
+	companyReply, err := s.companyClient.DeleteCompany(ctx, &tm2_proto_company_go.DeleteCompanyRequest{Id: request.Id})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "DeleteCompany error: %v", companyReply.Error)
+	}
+	reply := &tm2_proto_gateway_go.DeleteUserReply{}
+	return reply, nil
 }
