@@ -318,6 +318,15 @@
         }
       }
     },
+    "userGender": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "UNKNOWN"
+    },
     "userUserInfo": {
       "type": "object",
       "properties": {
@@ -327,6 +336,9 @@
         },
         "Name": {
           "type": "string"
+        },
+        "Gender": {
+          "$ref": "#/definitions/userGender"
         },
         "Email": {
           "type": "string"

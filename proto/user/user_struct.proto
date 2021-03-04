@@ -7,8 +7,15 @@ option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-user-go;
 message UserInfo {
     int32 UserID = 1;
     string Name = 2;
-    string Email = 3;
-    string PhoneNumber = 4;
-    string Address = 5;
-    int64 DateOfBirth = 6;
+    Gender Gender = 3;
+    string Email = 4;
+    string PhoneNumber = 5;
+    string Address = 6;
+    int64 DateOfBirth = 7;
+}
+
+enum Gender {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
 }
