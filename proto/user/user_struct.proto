@@ -5,13 +5,13 @@ option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-user-go;
 // User
 
 message UserInfo {
-    int32 UserID = 1;
-    string Name = 2;
-    Gender Gender = 3;
-    string Email = 4;
-    string PhoneNumber = 5;
-    string Address = 6;
-    int64 DateOfBirth = 7;
+    int32 userID = 1;
+    string name = 2;
+    Gender gender = 3;
+    string email = 4;
+    string phoneNumber = 5;
+    string address = 6;
+    int64 dateOfBirth = 7;
 }
 
 enum Gender {

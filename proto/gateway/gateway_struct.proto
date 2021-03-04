@@ -8,6 +8,6 @@ import "company/company_struct.proto";
 // Gateway service
 
 message UserDetail {
-    user.UserInfo User = 1;
-    company.CompanyInfo Company = 2;
+    user.UserInfo user = 1;
+    company.CompanyInfo company = 2;
 }
