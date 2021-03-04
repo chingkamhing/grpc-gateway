@@ -66,20 +66,20 @@ fi
 curl $OPTS -vd "{ \
 		\"value\":{ \
 			\"user\":{ \
-				\"userID\":0, \
-				\"name\":\"Alan Poon\", \
+				\"userID\":1, \
+				\"name\":\"John Dupoint\", \
 				\"gender\":\"MALE\", \
 				\"email\":\"alanpoon@email.com\", \
 				\"phoneNumber\":\"1234-5678\", \
-				\"address\":\"Alan Poon - address\", \
+				\"address\":\"John Dupoint - address\", \
 				\"dateOfBirth\":946684800 \
 			}, \
 			\"company\":{ \
-				\"companyID\":\"0\", \
-				\"name\":\"Hello World Ltd.\", \
+				\"companyID\":\"1\", \
+				\"name\":\"Picasa Art Ltd.\", \
 				\"phoneNumber\":\"1-800-1234-5678\", \
-				\"address\":\"info@helloworld.com\", \
-				\"bussiness\":\"technical\" \
+				\"address\":\"info@picasaart.com\", \
+				\"bussiness\":\"art\" \
 			} \
 		} \
 	}" \

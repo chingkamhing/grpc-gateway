@@ -1,9 +1,18 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "gateway/gateway_rr.proto",
-    "version": "version not set"
+    "title": "gRPC Gateway Testing Project",
+    "version": "0.1.0",
+    "contact": {
+      "name": "github.com/TMGaminghk/grpc-gateway",
+      "url": "https://www.tmgaming.page/",
+      "email": "kam.dev@tmgaming.page"
+    }
   },
+  "schemes": [
+    "http",
+    "https"
+  ],
   "consumes": [
     "application/json"
   ],
@@ -355,5 +364,18 @@
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "description": "Authentication token, prefixed by Bearer: Bearer \u003ctoken\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
 }
