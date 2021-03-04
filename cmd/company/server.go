@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -14,7 +15,8 @@ type server struct {
 	tm2_proto_company_go.UnimplementedCompanyServer
 }
 
-var companies = []*tm2_proto_company_go.CompanyInfo{}
+// save companies in memory
+var companyMap = map[int32]*tm2_proto_company_go.CompanyInfo{}
 
 // NewServer return GatewayServer interface
 func NewServer() tm2_proto_company_go.CompanyServer {
@@ -22,27 +24,50 @@ func NewServer() tm2_proto_company_go.CompanyServer {
 }
 
 func (s *server) CreateCompany(ctx context.Context, request *tm2_proto_company_go.CreateCompanyRequest) (*tm2_proto_company_go.CreateCompanyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
+	fmt.Printf("CreateCompany: %+v\n", request.Value)
+	companyMap[request.Value.CompanyID] = request.Value
+	reply := &tm2_proto_company_go.CreateCompanyReply{
+		Value: companyMap[request.Value.CompanyID],
+	}
+	return reply, nil
 }
 
 func (s *server) ListCompany(ctx context.Context, request *tm2_proto_company_go.ListCompanyRequest) (*tm2_proto_company_go.ListCompanyReply, error) {
+	companys := []*tm2_proto_company_go.CompanyInfo{}
+	for i := range companyMap {
+		companys = append(companys, companyMap[i])
+	}
 	reply := &tm2_proto_company_go.ListCompanyReply{
-		Value:  companies,
+		Values: companys,
 		Offset: request.Offset,
 		Limit:  request.Limit,
-		Count:  int32(len(companies)),
+		Count:  int32(len(companys)),
 	}
 	return reply, nil
 }
 
 func (s *server) GetCompany(ctx context.Context, request *tm2_proto_company_go.GetCompanyRequest) (*tm2_proto_company_go.GetCompanyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCompany not implemented")
+	reply := &tm2_proto_company_go.GetCompanyReply{
+		Value: companyMap[request.Id],
+	}
+	return reply, nil
 }
 
 func (s *server) UpdateCompany(ctx context.Context, request *tm2_proto_company_go.UpdateCompanyRequest) (*tm2_proto_company_go.UpdateCompanyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompany not implemented")
+	if _, ok := companyMap[request.Value.CompanyID]; ok != true {
+		return nil, status.Errorf(codes.NotFound, "UpdateCompany cannot find id: ", request.Value.CompanyID)
+	}
+	companyMap[request.Value.CompanyID] = request.Value
+	reply := &tm2_proto_company_go.UpdateCompanyReply{
+		Value: companyMap[request.Value.CompanyID],
+	}
+	return reply, nil
 }
 
 func (s *server) DeleteCompany(ctx context.Context, request *tm2_proto_company_go.DeleteCompanyRequest) (*tm2_proto_company_go.DeleteCompanyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteCompany not implemented")
+	if _, ok := companyMap[request.Id]; ok != true {
+		return nil, status.Errorf(codes.NotFound, "DeleteCompany cannot find id: ", request.Id)
+	}
+	delete(companyMap, request.Id)
+	return &tm2_proto_company_go.DeleteCompanyReply{}, nil
 }

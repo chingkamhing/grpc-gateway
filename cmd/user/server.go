@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -14,7 +15,8 @@ type server struct {
 	tm2_proto_user_go.UnimplementedUserServer
 }
 
-var users = []*tm2_proto_user_go.UserInfo{}
+// save users in memory
+var userMap = map[int32]*tm2_proto_user_go.UserInfo{}
 
 // NewServer return GatewayServer interface
 func NewServer() tm2_proto_user_go.UserServer {
@@ -22,12 +24,21 @@ func NewServer() tm2_proto_user_go.UserServer {
 }
 
 func (s *server) CreateUser(ctx context.Context, request *tm2_proto_user_go.CreateUserRequest) (*tm2_proto_user_go.CreateUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+	fmt.Printf("CreateUser: %+v\n", request.Value)
+	userMap[request.Value.UserID] = request.Value
+	reply := &tm2_proto_user_go.CreateUserReply{
+		Value: userMap[request.Value.UserID],
+	}
+	return reply, nil
 }
 
 func (s *server) ListUser(ctx context.Context, request *tm2_proto_user_go.ListUserRequest) (*tm2_proto_user_go.ListUserReply, error) {
+	users := []*tm2_proto_user_go.UserInfo{}
+	for i := range userMap {
+		users = append(users, userMap[i])
+	}
 	reply := &tm2_proto_user_go.ListUserReply{
-		Value:  users,
+		Values: users,
 		Offset: request.Offset,
 		Limit:  request.Limit,
 		Count:  int32(len(users)),
@@ -36,13 +47,27 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_user_go.ListUs
 }
 
 func (s *server) GetUser(ctx context.Context, request *tm2_proto_user_go.GetUserRequest) (*tm2_proto_user_go.GetUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+	reply := &tm2_proto_user_go.GetUserReply{
+		Value: userMap[request.Id],
+	}
+	return reply, nil
 }
 
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_user_go.UpdateUserRequest) (*tm2_proto_user_go.UpdateUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+	if _, ok := userMap[request.Value.UserID]; ok != true {
+		return nil, status.Errorf(codes.NotFound, "UpdateUser cannot find id: ", request.Value.UserID)
+	}
+	userMap[request.Value.UserID] = request.Value
+	reply := &tm2_proto_user_go.UpdateUserReply{
+		Value: userMap[request.Value.UserID],
+	}
+	return reply, nil
 }
 
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_user_go.DeleteUserRequest) (*tm2_proto_user_go.DeleteUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+	if _, ok := userMap[request.Id]; ok != true {
+		return nil, status.Errorf(codes.NotFound, "DeleteUser cannot find id: ", request.Id)
+	}
+	delete(userMap, request.Id)
+	return &tm2_proto_user_go.DeleteUserReply{}, nil
 }

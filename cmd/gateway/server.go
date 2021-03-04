@@ -55,15 +55,15 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.Lis
 		return nil, status.Errorf(codes.NotFound, "ListCompany error: %v", err)
 	}
 	reply := &tm2_proto_gateway_go.ListUserReply{
-		Value:  []*tm2_proto_gateway_go.UserDetail{},
+		Values: []*tm2_proto_gateway_go.UserDetail{},
 		Offset: userReply.Offset,
 		Limit:  userReply.Limit,
 		Count:  userReply.Count,
 	}
-	for i := range userReply.Value {
-		reply.Value = append(reply.Value, &tm2_proto_gateway_go.UserDetail{
-			User:    userReply.Value[i],
-			Company: companyReply.Value[i],
+	for i := range userReply.Values {
+		reply.Values = append(reply.Values, &tm2_proto_gateway_go.UserDetail{
+			User:    userReply.Values[i],
+			Company: companyReply.Values[i],
 		})
 	}
 	return reply, nil
