@@ -179,20 +179,20 @@
     "companyCompanyInfo": {
       "type": "object",
       "properties": {
-        "CompanyID": {
+        "companyID": {
           "type": "integer",
           "format": "int32"
         },
-        "Name": {
+        "name": {
           "type": "string"
         },
-        "PhoneNumber": {
+        "phoneNumber": {
           "type": "string"
         },
-        "Address": {
+        "address": {
           "type": "string"
         },
-        "Bussiness": {
+        "bussiness": {
           "type": "string"
         }
       }
@@ -235,7 +235,7 @@
     "gatewayListUserReply": {
       "type": "object",
       "properties": {
-        "value": {
+        "values": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/gatewayUserDetail"
@@ -277,10 +277,10 @@
     "gatewayUserDetail": {
       "type": "object",
       "properties": {
-        "User": {
+        "user": {
           "$ref": "#/definitions/userUserInfo"
         },
-        "Company": {
+        "company": {
           "$ref": "#/definitions/companyCompanyInfo"
         }
       }
@@ -330,26 +330,26 @@
     "userUserInfo": {
       "type": "object",
       "properties": {
-        "UserID": {
+        "userID": {
           "type": "integer",
           "format": "int32"
         },
-        "Name": {
+        "name": {
           "type": "string"
         },
-        "Gender": {
+        "gender": {
           "$ref": "#/definitions/userGender"
         },
-        "Email": {
+        "email": {
           "type": "string"
         },
-        "PhoneNumber": {
+        "phoneNumber": {
           "type": "string"
         },
-        "Address": {
+        "address": {
           "type": "string"
         },
-        "DateOfBirth": {
+        "dateOfBirth": {
           "type": "string",
           "format": "int64"
         }
