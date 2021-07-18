@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"net"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go"
 )
@@ -38,7 +40,15 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 	// Create a gRPC server object
-	s := grpc.NewServer()
+	cert, err := tls.LoadX509KeyPair("deploy/cert/localhost/localhost.pem", "deploy/cert/localhost/localhost.key")
+	if err != nil {
+		log.Fatalf("failed to load key pair: %s", err)
+	}
+	serverOptions := []grpc.ServerOption{
+		// Enable TLS for all incoming connections.
+		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+	}
+	s := grpc.NewServer(serverOptions...)
 	// Attach the Greeter service to the server
 	tm2_proto_gateway_go.RegisterGatewayServer(s, NewServer(userConn, companyConn))
 	// Serve gRPC server
@@ -49,8 +59,13 @@ func main() {
 
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
+	creds, err := credentials.NewClientTLSFromFile("deploy/cert/localhost/ca.pem", "localhost")
+	if err != nil {
+		log.Fatalf("failed to load credentials: %v", err)
+	}
 	gatewayOptions := []grpc.DialOption{
-		grpc.WithInsecure(),
+		// oauth.NewOauthAccess requires the configuration of transport credentials.
+		grpc.WithTransportCredentials(creds),
 	}
 	gatewayConn, err := grpc.DialContext(context.Background(), gatewayHost, gatewayOptions...)
 	if err != nil {
