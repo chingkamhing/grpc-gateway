@@ -19,40 +19,24 @@ const companyHost = "0.0.0.0:8003"
 
 // create gateway service
 func main() {
+	serviceOptions := []grpc.DialOption{
+		grpc.WithInsecure(),
+	}
+	// user gRPC client connection
+	userConn, err := grpc.DialContext(context.Background(), userHost, serviceOptions...)
+	if err != nil {
+		log.Fatalln("Failed to dial server:", err)
+	}
+	// company gRPC client connection
+	companyConn, err := grpc.DialContext(context.Background(), companyHost, serviceOptions...)
+	if err != nil {
+		log.Fatalln("Failed to dial server:", err)
+	}
 	// Create a listener on TCP port
 	lis, err := net.Listen("tcp", gatewayHost)
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
-	// Create a client connection to the gRPC server we just started
-	// This is where the gRPC-Gateway proxies the requests
-	gatewayConn, err := grpc.DialContext(
-		context.Background(),
-		gatewayHost,
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		log.Fatalln("Failed to dial server:", err)
-	}
-	// user gRPC client connection
-	userConn, err := grpc.DialContext(
-		context.Background(),
-		userHost,
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		log.Fatalln("Failed to dial server:", err)
-	}
-	// company gRPC client connection
-	companyConn, err := grpc.DialContext(
-		context.Background(),
-		companyHost,
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		log.Fatalln("Failed to dial server:", err)
-	}
-
 	// Create a gRPC server object
 	s := grpc.NewServer()
 	// Attach the Greeter service to the server
@@ -63,6 +47,15 @@ func main() {
 		log.Fatalln(s.Serve(lis))
 	}()
 
+	// Create a client connection to the gRPC server we just started
+	// This is where the gRPC-Gateway proxies the requests
+	gatewayOptions := []grpc.DialOption{
+		grpc.WithInsecure(),
+	}
+	gatewayConn, err := grpc.DialContext(context.Background(), gatewayHost, gatewayOptions...)
+	if err != nil {
+		log.Fatalln("Failed to dial server:", err)
+	}
 	gwmux := runtime.NewServeMux()
 	// Register Greeter
 	err = tm2_proto_gateway_go.RegisterGatewayHandler(context.Background(), gwmux, gatewayConn)
