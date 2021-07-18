@@ -54,7 +54,7 @@ func (s *server) GetUser(ctx context.Context, request *tm2_proto_user_go.GetUser
 }
 
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_user_go.UpdateUserRequest) (*tm2_proto_user_go.UpdateUserReply, error) {
-	if _, ok := userMap[request.Value.UserID]; ok != true {
+	if _, ok := userMap[request.Value.UserID]; !ok {
 		return nil, status.Errorf(codes.NotFound, "UpdateUser cannot find id: ", request.Value.UserID)
 	}
 	userMap[request.Value.UserID] = request.Value
@@ -65,7 +65,7 @@ func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_user_go.Upda
 }
 
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_user_go.DeleteUserRequest) (*tm2_proto_user_go.DeleteUserReply, error) {
-	if _, ok := userMap[request.Id]; ok != true {
+	if _, ok := userMap[request.Id]; !ok {
 		return nil, status.Errorf(codes.NotFound, "DeleteUser cannot find id: ", request.Id)
 	}
 	delete(userMap, request.Id)
