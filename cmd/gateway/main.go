@@ -47,7 +47,7 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 	// Create a gRPC server object
-	cert, err := tls.LoadX509KeyPair("deploy/cert/localhost/localhost.pem", "deploy/cert/localhost/localhost.key")
+	cert, err := tls.LoadX509KeyPair("deploy/cert/localhost/localhost.crt", "deploy/cert/localhost/localhost.key")
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
@@ -74,6 +74,7 @@ func main() {
 	gatewayOptions := []grpc.DialOption{
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
 		grpc.WithTransportCredentials(creds),
+		grpc.WithPerRPCCredentials(tokenAuth{token: "1234567890abcdefg"}),
 	}
 	gatewayConn, err := grpc.DialContext(context.Background(), gatewayHost, gatewayOptions...)
 	if err != nil {
@@ -106,7 +107,7 @@ func valid(authorization []string) bool {
 	// Perform the token validation here. For the sake of this example, the code
 	// here forgoes any of the usual OAuth2 token validation and instead checks
 	// for a token matching an arbitrary string.
-	return token == "some-secret-token"
+	return token == "1234567890abcdefg"
 }
 
 // ensureValidToken ensures a valid token exists within a request's metadata. If
@@ -126,4 +127,18 @@ func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	}
 	// Continue execution of handler after ensuring a valid token.
 	return handler(ctx, req)
+}
+
+type tokenAuth struct {
+	token string
+}
+
+func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[string]string, error) {
+	return map[string]string{
+		"authorization": "Bearer " + t.token,
+	}, nil
+}
+
+func (tokenAuth) RequireTransportSecurity() bool {
+	return true
 }
