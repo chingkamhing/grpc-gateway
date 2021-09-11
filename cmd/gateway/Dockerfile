@@ -26,4 +26,4 @@ COPY ./deploy ./deploy
 ENTRYPOINT ["/app/main"]
 
 # Expose default port
-EXPOSE 9000
+EXPOSE 8000
