@@ -26,7 +26,6 @@ func main() {
 	gatewayOptions := []grpc.DialOption{
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
 		grpc.WithTransportCredentials(creds),
-		grpc.WithPerRPCCredentials(tokenAuth{token: "1234567890abcdefg"}),
 	}
 	gatewayConn, err := grpc.DialContext(context.Background(), proxyHost, gatewayOptions...)
 	if err != nil {
@@ -44,18 +43,4 @@ func main() {
 	}
 	log.Printf("Serving http gateway on http://%s\n", host)
 	log.Fatalln(gwServer.ListenAndServe())
-}
-
-type tokenAuth struct {
-	token string
-}
-
-func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[string]string, error) {
-	return map[string]string{
-		"authorization": "Bearer " + t.token,
-	}, nil
-}
-
-func (tokenAuth) RequireTransportSecurity() bool {
-	return true
 }
