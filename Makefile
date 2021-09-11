@@ -20,6 +20,7 @@ generate:
 .PHONY: build
 build:
 	go build -ldflags '-extldflags "-static"' -o gateway cmd/gateway/*.go
+	go build -ldflags '-extldflags "-static"' -o proxy cmd/proxy/*.go
 	go build -ldflags '-extldflags "-static"' -o user cmd/user/*.go
 	go build -ldflags '-extldflags "-static"' -o company cmd/company/*.go
 
@@ -36,5 +37,6 @@ docker:
 clean:
 	rm -rf lib/*
 	rm -f gateway
+	rm -f proxy
 	rm -f user
 	rm -f company

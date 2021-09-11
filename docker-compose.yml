@@ -15,13 +15,13 @@ services:
     ports:
       - 8000:8000
   #
-  # company
+  # proxy
   #
-  company:
+  proxy:
     build:
       context: ./
-      dockerfile: ./cmd/company/Dockerfile
-    image: ${DOCKER_ID}/srv-company:latest
+      dockerfile: ./cmd/proxy/Dockerfile
+    image: ${DOCKER_ID}/srv-proxy:latest
     restart: always
     networks:
       - net
@@ -33,6 +33,17 @@ services:
       context: ./
       dockerfile: ./cmd/user/Dockerfile
     image: ${DOCKER_ID}/srv-user:latest
+    restart: always
+    networks:
+      - net
+  #
+  # company
+  #
+  company:
+    build:
+      context: ./
+      dockerfile: ./cmd/company/Dockerfile
+    image: ${DOCKER_ID}/srv-company:latest
     restart: always
     networks:
       - net
