@@ -20,6 +20,73 @@
     "application/json"
   ],
   "paths": {
+    "/v1/login": {
+      "post": {
+        "summary": "User login",
+        "operationId": "Gateway_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/gatewayLoginReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gatewayLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Gateway"
+        ],
+        "security": []
+      }
+    },
+    "/v1/logout": {
+      "post": {
+        "summary": "User logout",
+        "operationId": "Gateway_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/gatewayLogoutReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/gatewayLogoutRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Gateway"
+        ]
+      }
+    },
     "/v1/user": {
       "get": {
         "summary": "List user",
@@ -266,6 +333,31 @@
           "type": "string"
         }
       }
+    },
+    "gatewayLoginReply": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/gatewayUserDetail"
+        }
+      }
+    },
+    "gatewayLoginRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "gatewayLogoutReply": {
+      "type": "object"
+    },
+    "gatewayLogoutRequest": {
+      "type": "object"
     },
     "gatewayUpdateUserReply": {
       "type": "object",

@@ -4,7 +4,7 @@
 #
 
 # https://github.com/protocolbuffers/protobuf/releases/
-PROTOC_VER="3.15.3"
+PROTOC_VER="3.17.3"
 PROTOC_ZIP="protoc-${PROTOC_VER}-linux-x86_64.zip"
 INSTALL_DIR="${HOME}/.local"
 
@@ -48,9 +48,9 @@ unzip -o $PROTOC_ZIP -d ${INSTALL_DIR} bin/protoc
 unzip -o $PROTOC_ZIP -d ${INSTALL_DIR}/bin 'include/*'
 rm -f $PROTOC_ZIP
 
-# get protocol buffer libraries
-go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
-go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
-go get -u google.golang.org/protobuf/cmd/protoc-gen-go
-go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
-go get -u github.com/favadi/protoc-go-inject-tag
+# install protocol buffer libraries
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+go install google.golang.org/protobuf/cmd/protoc-gen-go
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go install github.com/favadi/protoc-go-inject-tag
