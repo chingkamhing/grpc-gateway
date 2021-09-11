@@ -38,12 +38,10 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
-
 	gwServer := &http.Server{
 		Addr:    host,
 		Handler: gwmux,
 	}
-
 	log.Printf("Serving http gateway on http://%s\n", host)
 	log.Fatalln(gwServer.ListenAndServe())
 }
