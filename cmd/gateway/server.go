@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -20,12 +21,24 @@ type server struct {
 	tm2_proto_gateway_go.UnimplementedGatewayServer
 }
 
+var _ tm2_proto_gateway_go.GatewayServer = &server{}
+
 // NewServer return GatewayServer interface
 func NewServer(userConn *grpc.ClientConn, companyConn *grpc.ClientConn) tm2_proto_gateway_go.GatewayServer {
 	return &server{
 		userClient:    tm2_proto_user_go.NewUserClient(userConn),
 		companyClient: tm2_proto_company_go.NewCompanyClient(companyConn),
 	}
+}
+
+func (s *server) Login(ctx context.Context, request *tm2_proto_gateway_go.LoginRequest) (*tm2_proto_gateway_go.LoginReply, error) {
+	//FIXME
+	return nil, fmt.Errorf("method not implemented")
+}
+
+func (s *server) Logout(ctx context.Context, request *tm2_proto_gateway_go.LogoutRequest) (*tm2_proto_gateway_go.LogoutReply, error) {
+	//FIXME
+	return nil, fmt.Errorf("method not implemented")
 }
 
 func (s *server) CreateUser(ctx context.Context, request *tm2_proto_gateway_go.CreateUserRequest) (*tm2_proto_gateway_go.CreateUserReply, error) {
@@ -45,6 +58,7 @@ func (s *server) CreateUser(ctx context.Context, request *tm2_proto_gateway_go.C
 	}
 	return reply, nil
 }
+
 func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.ListUserRequest) (*tm2_proto_gateway_go.ListUserReply, error) {
 	userReply, err := s.userClient.ListUser(ctx, &tm2_proto_user_go.ListUserRequest{Offset: request.Offset, Limit: request.Limit})
 	if err != nil {
@@ -68,6 +82,7 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.Lis
 	}
 	return reply, nil
 }
+
 func (s *server) GetUser(ctx context.Context, request *tm2_proto_gateway_go.GetUserRequest) (*tm2_proto_gateway_go.GetUserReply, error) {
 	userReply, err := s.userClient.GetUser(ctx, &tm2_proto_user_go.GetUserRequest{Id: request.Id})
 	if err != nil {
@@ -85,6 +100,7 @@ func (s *server) GetUser(ctx context.Context, request *tm2_proto_gateway_go.GetU
 	}
 	return reply, nil
 }
+
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.UpdateUserRequest) (*tm2_proto_gateway_go.UpdateUserReply, error) {
 	userReply, err := s.userClient.UpdateUser(ctx, &tm2_proto_user_go.UpdateUserRequest{Value: request.Value.User})
 	if err != nil {
@@ -102,6 +118,7 @@ func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.U
 	}
 	return reply, nil
 }
+
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_gateway_go.DeleteUserRequest) (*tm2_proto_gateway_go.DeleteUserReply, error) {
 	userReply, err := s.userClient.DeleteUser(ctx, &tm2_proto_user_go.DeleteUserRequest{Id: request.Id})
 	if err != nil {

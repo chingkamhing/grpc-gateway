@@ -41,6 +41,23 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 // Gateway service
 service Gateway {
+    // User login
+    rpc Login (LoginRequest) returns (LoginReply) {
+        option (google.api.http) = {
+            post: "/v1/login"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            security: {}
+        };
+    }
+    // User logout
+    rpc Logout (LogoutRequest) returns (LogoutReply) {
+        option (google.api.http) = {
+            post: "/v1/logout"
+            body: "*"
+        };
+    }
     // Create user
     rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
         option (google.api.http) = {

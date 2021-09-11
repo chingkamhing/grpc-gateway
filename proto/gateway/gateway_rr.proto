@@ -4,6 +4,25 @@ option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-
 
 import "gateway/gateway_struct.proto";
 
+// Log in/out request/reply
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginReply {
+    gateway.UserDetail value = 1;
+}
+
+message LogoutRequest {
+    // nothing
+}
+
+message LogoutReply {
+    // nothing
+}
+
 // User request/reply
 
 message CreateUserRequest {

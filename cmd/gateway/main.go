@@ -22,9 +22,9 @@ var errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata"
 var errInvalidToken = status.Errorf(codes.Unauthenticated, "invalid token")
 
 const webHost = "0.0.0.0:8000"
-const gatewayHost = "0.0.0.0:8001"
-const userHost = "0.0.0.0:8002"
-const companyHost = "0.0.0.0:8003"
+const gatewayHost = "0.0.0.0:9000"
+const userHost = "user:9000"
+const companyHost = "company:9000"
 
 // create gateway service
 func main() {

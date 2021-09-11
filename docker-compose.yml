@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  #
+  # gateway
+  #
+  gateway:
+    build:
+      context: ./
+      dockerfile: ./cmd/gateway/Dockerfile
+    image: ${DOCKER_ID}/srv-gateway:latest
+    restart: always
+    networks:
+      - net
+    ports:
+      - 8000:8000
+  #
+  # company
+  #
+  company:
+    build:
+      context: ./
+      dockerfile: ./cmd/company/Dockerfile
+    image: ${DOCKER_ID}/srv-company:latest
+    restart: always
+    networks:
+      - net
+  #
+  # user
+  #
+  user:
+    build:
+      context: ./
+      dockerfile: ./cmd/user/Dockerfile
+    image: ${DOCKER_ID}/srv-user:latest
+    restart: always
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
