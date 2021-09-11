@@ -6,6 +6,7 @@
 URL="http://localhost"
 PORT="8000"
 ENDPOINT="v1/user"
+TOKEN="my-token-1234567890"
 FILE_COOKIE=".cookie"
 OPTS=""
 NUM_ARGS=0
