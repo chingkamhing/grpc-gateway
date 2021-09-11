@@ -13,7 +13,7 @@ import (
 )
 
 const host = "0.0.0.0:8000"
-const proxy = "proxy:9000"
+const proxyHost = "proxy:9000"
 
 // create gateway service
 func main() {
@@ -28,7 +28,7 @@ func main() {
 		grpc.WithTransportCredentials(creds),
 		grpc.WithPerRPCCredentials(tokenAuth{token: "1234567890abcdefg"}),
 	}
-	gatewayConn, err := grpc.DialContext(context.Background(), proxy, gatewayOptions...)
+	gatewayConn, err := grpc.DialContext(context.Background(), proxyHost, gatewayOptions...)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}

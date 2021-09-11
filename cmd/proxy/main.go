@@ -19,8 +19,7 @@ import (
 var errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
 var errInvalidToken = status.Errorf(codes.Unauthenticated, "invalid token")
 
-const webHost = "0.0.0.0:8000"
-const gatewayHost = "0.0.0.0:9000"
+const host = "0.0.0.0:9000"
 const userHost = "user:9000"
 const companyHost = "company:9000"
 
@@ -40,7 +39,7 @@ func main() {
 		log.Fatalln("Failed to dial server:", err)
 	}
 	// Create a listener on TCP port
-	lis, err := net.Listen("tcp", gatewayHost)
+	lis, err := net.Listen("tcp", host)
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
@@ -58,7 +57,7 @@ func main() {
 	// Attach the Greeter service to the server
 	tm2_proto_gateway_go.RegisterGatewayServer(s, NewServer(userConn, companyConn))
 	// Serve gRPC server
-	log.Println("Serving gRPC on ", gatewayHost)
+	log.Println("Serving gRPC on ", host)
 	log.Fatalln(s.Serve(lis))
 }
 
