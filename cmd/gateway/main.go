@@ -44,7 +44,7 @@ func main() {
 		Handler: gwmux,
 	}
 
-	log.Printf("Serving gRPC-Gateway on http://%s\n", host)
+	log.Printf("Serving http gateway on http://%s\n", host)
 	log.Fatalln(gwServer.ListenAndServe())
 }
 
