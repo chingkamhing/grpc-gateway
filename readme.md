@@ -9,6 +9,12 @@ This is a project to evaluate grpc-gateway.
     + config all endpoints with or without authentication
     + in gateway's out-bound interceptor, check if there is any "authorization" in the metadata, perform corresponding authentication if so
     + upon runtime.NewServeMux(), forward necessary request info to the metadata to fullfill the authentication needs
+* cookies or session handling
+    + how to integrate with session library (e.g. scs)?
+    + ???
+* open API settings
+    + e.g. "x-nullable", "x-go-custom-tag", "required", etc.
+    + ???
 
 ## Knowledge Base
 
