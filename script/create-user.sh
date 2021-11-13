@@ -23,6 +23,7 @@ Usage () {
 	echo " -k                           Allow https insecure connection"
 	echo " -u  [url]                    TM2 API server URL"
 	echo " -p  [port]                   TM2 API server port number"
+	echo " -v                           Verbose output"
 	echo " -h                           This help message"
 	echo
 }
@@ -41,6 +42,9 @@ while [ "${1:0:1}" == "-" ]; do
 	"p")
 		PORT=$2
 		shift
+		;;
+	"v")
+		OPTS="$OPTS -v"
 		;;
 	"h")
 		Usage
@@ -64,7 +68,7 @@ else
 fi
 
 # perform curl to get the response
-curl $OPTS -vd "{ \
+curl $OPTS -d "{ \
 		\"value\":{ \
 			\"user\":{ \
 				\"userID\":1, \
