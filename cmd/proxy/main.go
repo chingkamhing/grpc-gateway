@@ -15,6 +15,8 @@ import (
 const host = "0.0.0.0:9000"
 const userHost = "user:9000"
 const companyHost = "company:9000"
+const certFile = "deploy/cert/localhost/localhost.crt"
+const keyFile = "deploy/cert/localhost/localhost.key"
 
 // create gateway service
 func main() {
@@ -37,7 +39,7 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 	// Create a gRPC server object
-	cert, err := tls.LoadX509KeyPair("deploy/cert/localhost/localhost.crt", "deploy/cert/localhost/localhost.key")
+	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
