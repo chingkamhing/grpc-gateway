@@ -20,7 +20,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/login": {
+    "/v1/account/login": {
       "post": {
         "summary": "User login",
         "operationId": "Gateway_Login",
@@ -54,7 +54,7 @@
         "security": []
       }
     },
-    "/v1/logout": {
+    "/v1/account/logout": {
       "post": {
         "summary": "User logout",
         "operationId": "Gateway_Logout",
