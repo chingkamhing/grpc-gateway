@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -13,8 +14,10 @@ import (
 	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go"
 )
 
-const host = "0.0.0.0:8000"
-const proxyHost = "proxy:9000"
+const host = "0.0.0.0"
+const port = 8000
+const proxyHost = "proxy"
+const proxyPort = 9000
 
 // create gateway service
 func main() {
@@ -29,7 +32,7 @@ func main() {
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
 		grpc.WithTransportCredentials(creds),
 	}
-	gatewayConn, err := grpc.DialContext(context.Background(), proxyHost, gatewayOptions...)
+	gatewayConn, err := grpc.DialContext(context.Background(), fmt.Sprintf("%s:%d", proxyHost, proxyPort), gatewayOptions...)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}
@@ -48,10 +51,10 @@ func main() {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 	gwServer := &http.Server{
-		Addr:    host,
+		Addr:    fmt.Sprintf("%s:%d", host, port),
 		Handler: gwMux,
 	}
-	log.Printf("Serving http gateway on http://%s\n", host)
+	log.Printf("Serving http gateway on http://%s:%d\n", host, port)
 	log.Fatalln(gwServer.ListenAndServe())
 }
 
