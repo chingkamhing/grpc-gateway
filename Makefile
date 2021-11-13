@@ -1,12 +1,23 @@
 .PHONY: help
 help:
 	@echo "Usage:"
-	@echo "    install              Install protoc programs"
-	@echo "    generate             Generate proto files"
-	@echo "    build                Build this project locally"
-	@echo "    test                 Perform go testing"
-	@echo "    docker               Build all services docker images"
-	@echo "    clean                Clean this project and database docker volume"
+	@echo "Protobuf commands"
+	@echo "    install         Install protoc programs"
+	@echo "    generate        Generate proto files"
+	@echo "Git commands"
+	@echo "    push            Push changes to github"
+	@echo "    pull            Pull in commits from github"
+	@echo "Makefile commands"
+	@echo "    build           Build this project locally"
+	@echo "    update          go update libraries"
+	@echo "    test            Perform go testing"
+	@echo "    clean           Clean this project and database docker volume"
+	@echo "    docker          Build all services docker images"
+	@echo "Docker commands"
+	@echo "    docker-up       Docker-compose up"
+	@echo "    docker-down     Docker-compose down"
+
+SERVICES = gateway proxy user company
 
 .PHONY: install
 install:
@@ -16,27 +27,56 @@ install:
 generate:
 	./script/proto-gen.sh
 
+.PHONY: push
+push:
+	git push
+
+.PHONY: pull
+pull:
+	git pull
+
 # build the source to native OS and platform
 .PHONY: build
 build:
-	go build -ldflags '-extldflags "-static"' -o gateway cmd/gateway/*.go
-	go build -ldflags '-extldflags "-static"' -o proxy cmd/proxy/*.go
-	go build -ldflags '-extldflags "-static"' -o user cmd/user/*.go
-	go build -ldflags '-extldflags "-static"' -o company cmd/company/*.go
+	@for service in $(SERVICES) ; do \
+		echo "Building $$service..." ; \
+		go build -ldflags '-extldflags "-static"' -o $$service cmd/$$service/*.go ; \
+	done
+
+# go update libraries
+.PHONY: update
+update:
+	@for service in $(SERVICES) ; do \
+		echo "Updating $$service..." ; \
+		go get -u ./...
+		go mod tidy
+	done
 
 .PHONY: test
 test:
-	# nothing to do yet
-
-.PHONY: docker
-docker:
-	# individual docker for each service
-	docker-compose -f docker-compose.yml build
+	@for service in $(SERVICES) ; do \
+		echo "Testing $$service..." ; \
+	done
 
 .PHONY: clean
 clean:
 	rm -rf lib/*
-	rm -f gateway
-	rm -f proxy
-	rm -f user
-	rm -f company
+	@for service in $(SERVICES) ; do \
+		echo "Testing $$service..." ; \
+		rm -f $$service ; \
+	done
+
+# build the docker image
+.PHONY: docker
+docker:
+	docker-compose -f docker-compose.yml build
+
+# docker-compose up
+.PHONY: docker-up
+docker-up:
+	docker-compose -f docker-compose.yml up
+
+# docker-compose down
+.PHONY: docker-down
+docker-down:
+	docker-compose -f docker-compose.yml down
