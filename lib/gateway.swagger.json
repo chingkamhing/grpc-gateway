@@ -211,8 +211,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
           }
         ],
         "tags": [
@@ -241,8 +240,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
           }
         ],
         "tags": [
@@ -256,8 +254,7 @@
       "type": "object",
       "properties": {
         "companyID": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "name": {
           "type": "string"
@@ -278,9 +275,6 @@
       "properties": {
         "value": {
           "$ref": "#/definitions/gatewayUserDetail"
-        },
-        "error": {
-          "type": "string"
         }
       }
     },
@@ -295,7 +289,7 @@
     "gatewayDeleteUserReply": {
       "type": "object",
       "properties": {
-        "error": {
+        "id": {
           "type": "string"
         }
       }
@@ -328,9 +322,6 @@
         "count": {
           "type": "integer",
           "format": "int32"
-        },
-        "error": {
-          "type": "string"
         }
       }
     },
@@ -432,8 +423,7 @@
       "type": "object",
       "properties": {
         "userID": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "name": {
           "type": "string"
@@ -453,6 +443,9 @@
         "dateOfBirth": {
           "type": "string",
           "format": "int64"
+        },
+        "password": {
+          "type": "string"
         }
       }
     }
