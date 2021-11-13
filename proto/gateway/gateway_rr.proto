@@ -31,7 +31,6 @@ message CreateUserRequest {
 
 message CreateUserReply {
     gateway.UserDetail value = 1;
-    string error = 2;
 }
 
 message ListUserRequest {
@@ -44,7 +43,6 @@ message ListUserReply {
     int32 offset = 2;
     int32 limit = 3;
     int32 count = 4;
-    string error = 5;
 }
 
 message GetUserRequest {
@@ -68,5 +66,4 @@ message DeleteUserRequest {
 }
 
 message DeleteUserReply {
-    string error = 1;
 }

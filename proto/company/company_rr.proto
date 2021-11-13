@@ -12,7 +12,6 @@ message CreateCompanyRequest {
 
 message CreateCompanyReply {
     CompanyInfo value = 1;
-    string error = 2;
 }
 
 message ListCompanyRequest {
@@ -25,7 +24,6 @@ message ListCompanyReply {
     int32 offset = 2;
     int32 limit = 3;
     int32 count = 4;
-    string error = 5;
 }
 
 message GetCompanyRequest {
@@ -49,5 +47,4 @@ message DeleteCompanyRequest {
 }
 
 message DeleteCompanyReply {
-    string error = 1;
 }
