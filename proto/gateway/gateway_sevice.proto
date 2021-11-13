@@ -44,7 +44,7 @@ service Gateway {
     // User login
     rpc Login (LoginRequest) returns (LoginReply) {
         option (google.api.http) = {
-            post: "/v1/login"
+            post: "/v1/account/login"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -54,7 +54,7 @@ service Gateway {
     // User logout
     rpc Logout (LogoutRequest) returns (LogoutReply) {
         option (google.api.http) = {
-            post: "/v1/logout"
+            post: "/v1/account/logout"
             body: "*"
         };
     }
