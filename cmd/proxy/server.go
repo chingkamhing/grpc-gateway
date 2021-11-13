@@ -44,11 +44,13 @@ func (s *server) Logout(ctx context.Context, request *tm2_proto_gateway_go.Logou
 func (s *server) CreateUser(ctx context.Context, request *tm2_proto_gateway_go.CreateUserRequest) (*tm2_proto_gateway_go.CreateUserReply, error) {
 	userReply, err := s.userClient.CreateUser(ctx, &tm2_proto_user_go.CreateUserRequest{Value: request.Value.User})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "CreateUser error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "CreateUser error: %v", errMsg.Err())
 	}
 	companyReply, err := s.companyClient.CreateCompany(ctx, &tm2_proto_company_go.CreateCompanyRequest{Value: request.Value.Company})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "CreateCompany error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "CreateCompany error: %v", errMsg.Err())
 	}
 	reply := &tm2_proto_gateway_go.CreateUserReply{
 		Value: &tm2_proto_gateway_go.UserDetail{
@@ -62,11 +64,13 @@ func (s *server) CreateUser(ctx context.Context, request *tm2_proto_gateway_go.C
 func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.ListUserRequest) (*tm2_proto_gateway_go.ListUserReply, error) {
 	userReply, err := s.userClient.ListUser(ctx, &tm2_proto_user_go.ListUserRequest{Offset: request.Offset, Limit: request.Limit})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "ListUser error: %v", err)
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "ListUser error: %v", errMsg.Err())
 	}
 	companyReply, err := s.companyClient.ListCompany(ctx, &tm2_proto_company_go.ListCompanyRequest{Offset: request.Offset, Limit: request.Limit})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "ListCompany error: %v", err)
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "ListCompany error: %v", errMsg.Err())
 	}
 	reply := &tm2_proto_gateway_go.ListUserReply{
 		Values: []*tm2_proto_gateway_go.UserDetail{},
@@ -86,11 +90,13 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_gateway_go.Lis
 func (s *server) GetUser(ctx context.Context, request *tm2_proto_gateway_go.GetUserRequest) (*tm2_proto_gateway_go.GetUserReply, error) {
 	userReply, err := s.userClient.GetUser(ctx, &tm2_proto_user_go.GetUserRequest{Id: request.Id})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "GetUser error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "GetUser error: %v", errMsg.Err())
 	}
 	companyReply, err := s.companyClient.GetCompany(ctx, &tm2_proto_company_go.GetCompanyRequest{Id: request.Id})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "GetCompany error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "GetCompany error: %v", errMsg.Err())
 	}
 	reply := &tm2_proto_gateway_go.GetUserReply{
 		Value: &tm2_proto_gateway_go.UserDetail{
@@ -104,11 +110,13 @@ func (s *server) GetUser(ctx context.Context, request *tm2_proto_gateway_go.GetU
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.UpdateUserRequest) (*tm2_proto_gateway_go.UpdateUserReply, error) {
 	userReply, err := s.userClient.UpdateUser(ctx, &tm2_proto_user_go.UpdateUserRequest{Value: request.Value.User})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "UpdateUser error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "UpdateUser error: %v", errMsg.Err())
 	}
 	companyReply, err := s.companyClient.UpdateCompany(ctx, &tm2_proto_company_go.UpdateCompanyRequest{Value: request.Value.Company})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "UpdateCompany error")
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "UpdateCompany error: %v", errMsg.Err())
 	}
 	reply := &tm2_proto_gateway_go.UpdateUserReply{
 		Value: &tm2_proto_gateway_go.UserDetail{
@@ -122,21 +130,13 @@ func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.U
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_gateway_go.DeleteUserRequest) (*tm2_proto_gateway_go.DeleteUserReply, error) {
 	userReply, err := s.userClient.DeleteUser(ctx, &tm2_proto_user_go.DeleteUserRequest{Id: request.Id})
 	if err != nil {
-		errMsg := ""
-		st, ok := status.FromError(err)
-		if ok {
-			errMsg = st.Message()
-		}
-		return nil, status.Errorf(codes.NotFound, "DeleteUser error: %v", errMsg)
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "DeleteUser error: %v", errMsg.Err())
 	}
 	_, err = s.companyClient.DeleteCompany(ctx, &tm2_proto_company_go.DeleteCompanyRequest{Id: request.Id})
 	if err != nil {
-		errMsg := ""
-		st, ok := status.FromError(err)
-		if ok {
-			errMsg = st.Message()
-		}
-		return nil, status.Errorf(codes.NotFound, "DeleteCompany error: %v", errMsg)
+		errMsg, _ := status.FromError(err)
+		return nil, status.Errorf(codes.NotFound, "DeleteCompany error: %v", errMsg.Err())
 	}
 	reply := &tm2_proto_gateway_go.DeleteUserReply{
 		Id: userReply.Id,

@@ -2,12 +2,10 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"log"
 	"net"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 
 	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go"
 )
@@ -39,13 +37,13 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 	// Create a gRPC server object
-	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
-	if err != nil {
-		log.Fatalf("failed to load key pair: %s", err)
-	}
+	// cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+	// if err != nil {
+	// 	log.Fatalf("failed to load key pair: %s", err)
+	// }
 	serverOptions := []grpc.ServerOption{
 		// Enable TLS for all incoming connections.
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+		// grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
 	}
 	s := grpc.NewServer(serverOptions...)
 	// Attach the Greeter service to the server

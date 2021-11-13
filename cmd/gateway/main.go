@@ -8,7 +8,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 
 	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go"
@@ -18,19 +17,20 @@ const host = "0.0.0.0"
 const port = 8000
 const proxyHost = "proxy"
 const proxyPort = 9000
+const caFile = "deploy/cert/localhost/ca.crt"
 
 // create gateway service
 func main() {
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
-	creds, err := credentials.NewClientTLSFromFile("deploy/cert/localhost/ca.pem", "localhost")
-	if err != nil {
-		log.Fatalf("failed to load credentials: %v", err)
-	}
+	// creds, err := credentials.NewClientTLSFromFile(caFile, "localhost")
+	// if err != nil {
+	// 	log.Fatalf("failed to load credentials: %v", err)
+	// }
 	gatewayOptions := []grpc.DialOption{
 		grpc.WithChainUnaryInterceptor(authInterceptor),
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
-		grpc.WithTransportCredentials(creds),
+		grpc.WithInsecure(),
 	}
 	gatewayConn, err := grpc.DialContext(context.Background(), fmt.Sprintf("%s:%d", proxyHost, proxyPort), gatewayOptions...)
 	if err != nil {

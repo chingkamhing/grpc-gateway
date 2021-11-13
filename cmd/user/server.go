@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,7 +23,6 @@ func NewServer() tm2_proto_user_go.UserServer {
 }
 
 func (s *server) CreateUser(ctx context.Context, request *tm2_proto_user_go.CreateUserRequest) (*tm2_proto_user_go.CreateUserReply, error) {
-	fmt.Printf("CreateUser: %+v\n", request.Value)
 	userMap[request.Value.UserID] = request.Value
 	reply := &tm2_proto_user_go.CreateUserReply{
 		Value: userMap[request.Value.UserID],
@@ -47,27 +45,37 @@ func (s *server) ListUser(ctx context.Context, request *tm2_proto_user_go.ListUs
 }
 
 func (s *server) GetUser(ctx context.Context, request *tm2_proto_user_go.GetUserRequest) (*tm2_proto_user_go.GetUserReply, error) {
+	id := request.Id
+	value, ok := userMap[id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "user %v not found", id)
+	}
 	reply := &tm2_proto_user_go.GetUserReply{
-		Value: userMap[request.Id],
+		Value: value,
 	}
 	return reply, nil
 }
 
 func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_user_go.UpdateUserRequest) (*tm2_proto_user_go.UpdateUserReply, error) {
-	if _, ok := userMap[request.Value.UserID]; !ok {
-		return nil, status.Errorf(codes.NotFound, "UpdateUser cannot find id: ", request.Value.UserID)
+	id := request.Value.UserID
+	if _, ok := userMap[id]; !ok {
+		return nil, status.Errorf(codes.NotFound, "user %v not found: ", id)
 	}
-	userMap[request.Value.UserID] = request.Value
+	userMap[id] = request.Value
 	reply := &tm2_proto_user_go.UpdateUserReply{
-		Value: userMap[request.Value.UserID],
+		Value: userMap[id],
 	}
 	return reply, nil
 }
 
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_user_go.DeleteUserRequest) (*tm2_proto_user_go.DeleteUserReply, error) {
-	if _, ok := userMap[request.Id]; !ok {
-		return nil, status.Errorf(codes.NotFound, "DeleteUser cannot find id: ", request.Id)
+	id := request.Id
+	_, ok := userMap[id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "user %v not found", id)
 	}
 	delete(userMap, request.Id)
-	return &tm2_proto_user_go.DeleteUserReply{}, nil
+	return &tm2_proto_user_go.DeleteUserReply{
+		Id: id,
+	}, nil
 }

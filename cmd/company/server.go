@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,7 +23,6 @@ func NewServer() tm2_proto_company_go.CompanyServer {
 }
 
 func (s *server) CreateCompany(ctx context.Context, request *tm2_proto_company_go.CreateCompanyRequest) (*tm2_proto_company_go.CreateCompanyReply, error) {
-	fmt.Printf("CreateCompany: %+v\n", request.Value)
 	companyMap[request.Value.CompanyID] = request.Value
 	reply := &tm2_proto_company_go.CreateCompanyReply{
 		Value: companyMap[request.Value.CompanyID],
@@ -47,26 +45,34 @@ func (s *server) ListCompany(ctx context.Context, request *tm2_proto_company_go.
 }
 
 func (s *server) GetCompany(ctx context.Context, request *tm2_proto_company_go.GetCompanyRequest) (*tm2_proto_company_go.GetCompanyReply, error) {
+	id := request.Id
+	value, ok := companyMap[id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "company %v not found", id)
+	}
 	reply := &tm2_proto_company_go.GetCompanyReply{
-		Value: companyMap[request.Id],
+		Value: value,
 	}
 	return reply, nil
 }
 
 func (s *server) UpdateCompany(ctx context.Context, request *tm2_proto_company_go.UpdateCompanyRequest) (*tm2_proto_company_go.UpdateCompanyReply, error) {
-	if _, ok := companyMap[request.Value.CompanyID]; ok != true {
-		return nil, status.Errorf(codes.NotFound, "UpdateCompany cannot find id: ", request.Value.CompanyID)
+	id := request.Value.CompanyID
+	if _, ok := companyMap[id]; !ok {
+		return nil, status.Errorf(codes.NotFound, "company %v not found: ", id)
 	}
-	companyMap[request.Value.CompanyID] = request.Value
+	companyMap[id] = request.Value
 	reply := &tm2_proto_company_go.UpdateCompanyReply{
-		Value: companyMap[request.Value.CompanyID],
+		Value: companyMap[id],
 	}
 	return reply, nil
 }
 
 func (s *server) DeleteCompany(ctx context.Context, request *tm2_proto_company_go.DeleteCompanyRequest) (*tm2_proto_company_go.DeleteCompanyReply, error) {
-	if _, ok := companyMap[request.Id]; ok != true {
-		return nil, status.Errorf(codes.NotFound, "DeleteCompany cannot find id: ", request.Id)
+	id := request.Id
+	_, ok := companyMap[id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "company %v not found", id)
 	}
 	delete(companyMap, request.Id)
 	return &tm2_proto_company_go.DeleteCompanyReply{}, nil
