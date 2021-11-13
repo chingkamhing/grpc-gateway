@@ -16,7 +16,7 @@ type server struct {
 }
 
 // save companies in memory
-var companyMap = map[int32]*tm2_proto_company_go.CompanyInfo{}
+var companyMap = map[string]*tm2_proto_company_go.CompanyInfo{}
 
 // NewServer return GatewayServer interface
 func NewServer() tm2_proto_company_go.CompanyServer {

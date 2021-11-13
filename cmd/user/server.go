@@ -16,7 +16,7 @@ type server struct {
 }
 
 // save users in memory
-var userMap = map[int32]*tm2_proto_user_go.UserInfo{}
+var userMap = map[string]*tm2_proto_user_go.UserInfo{}
 
 // NewServer return GatewayServer interface
 func NewServer() tm2_proto_user_go.UserServer {

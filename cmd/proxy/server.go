@@ -122,12 +122,24 @@ func (s *server) UpdateUser(ctx context.Context, request *tm2_proto_gateway_go.U
 func (s *server) DeleteUser(ctx context.Context, request *tm2_proto_gateway_go.DeleteUserRequest) (*tm2_proto_gateway_go.DeleteUserReply, error) {
 	userReply, err := s.userClient.DeleteUser(ctx, &tm2_proto_user_go.DeleteUserRequest{Id: request.Id})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "DeleteUser error: %v", userReply.Error)
+		errMsg := ""
+		st, ok := status.FromError(err)
+		if ok {
+			errMsg = st.Message()
+		}
+		return nil, status.Errorf(codes.NotFound, "DeleteUser error: %v", errMsg)
 	}
-	companyReply, err := s.companyClient.DeleteCompany(ctx, &tm2_proto_company_go.DeleteCompanyRequest{Id: request.Id})
+	_, err = s.companyClient.DeleteCompany(ctx, &tm2_proto_company_go.DeleteCompanyRequest{Id: request.Id})
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "DeleteCompany error: %v", companyReply.Error)
+		errMsg := ""
+		st, ok := status.FromError(err)
+		if ok {
+			errMsg = st.Message()
+		}
+		return nil, status.Errorf(codes.NotFound, "DeleteCompany error: %v", errMsg)
 	}
-	reply := &tm2_proto_gateway_go.DeleteUserReply{}
+	reply := &tm2_proto_gateway_go.DeleteUserReply{
+		Id: userReply.Id,
+	}
 	return reply, nil
 }
