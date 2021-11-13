@@ -5,7 +5,7 @@ option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-company-
 // Company
 
 message CompanyInfo {
-    int32 companyID = 1;
+    string companyID = 1;
     string name = 2;
     string phoneNumber = 3;
     string address = 4;

@@ -46,7 +46,7 @@ message ListUserReply {
 }
 
 message GetUserRequest {
-    int32 id = 1;
+    string id = 1;
 }
 
 message GetUserReply {
@@ -62,8 +62,9 @@ message UpdateUserReply {
 }
 
 message DeleteUserRequest {
-    int32 id = 1;
+    string id = 1;
 }
 
 message DeleteUserReply {
+    string id = 1;
 }

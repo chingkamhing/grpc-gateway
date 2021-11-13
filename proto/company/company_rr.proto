@@ -27,7 +27,7 @@ message ListCompanyReply {
 }
 
 message GetCompanyRequest {
-    int32 id = 1;
+    string id = 1;
 }
 
 message GetCompanyReply {
@@ -43,8 +43,9 @@ message UpdateCompanyReply {
 }
 
 message DeleteCompanyRequest {
-    int32 id = 1;
+    string id = 1;
 }
 
 message DeleteCompanyReply {
+    string id = 1;
 }
