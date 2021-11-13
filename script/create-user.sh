@@ -71,7 +71,7 @@ fi
 curl $OPTS -d "{ \
 		\"value\":{ \
 			\"user\":{ \
-				\"userID\":1, \
+				\"userID\":\"1\", \
 				\"name\":\"John Dupoint\", \
 				\"gender\":\"MALE\", \
 				\"email\":\"alanpoon@email.com\", \
