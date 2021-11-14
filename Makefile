@@ -8,6 +8,7 @@ help:
 	@echo "    push            Push changes to github"
 	@echo "    pull            Pull in commits from github"
 	@echo "Makefile commands"
+	@echo "    cert            Generate all the necessary cert files"
 	@echo "    build           Build this project locally"
 	@echo "    update          go update libraries"
 	@echo "    test            Perform go testing"
@@ -34,6 +35,11 @@ push:
 .PHONY: pull
 pull:
 	git pull
+
+# generate both server and client cert for mTLS communication
+.PHONY: cert
+cert:
+	./script/cert.sh -c -v -o certs/localhost localhost 127.0.0.1
 
 # build the source to native OS and platform
 .PHONY: build
