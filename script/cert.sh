@@ -150,7 +150,7 @@ openssl genrsa -out $CAKEY $RSA_KEY_BITS
 openssl req -new -x509 -sha256 -days $CA_DAYS -key $CAKEY -out $CACRT -subj $SUBJECT_CA
 
 # use the ca to create server cert and private key
-openssl genrsa $RSA_KEY_BITS -out $SERVER_PRIKEY
+openssl genrsa -out $SERVER_PRIKEY $RSA_KEY_BITS
 openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -out $SERVER_CSR
 openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -set_serial 1 -out $SERVER_CRT
 
@@ -160,7 +160,7 @@ openssl verify -CAfile $CACRT $SERVER_CRT
 
 if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
     # use the ca to create client cert and private key
-    openssl genrsa $RSA_KEY_BITS -out $CLIENT_PRIKEY
+    openssl genrsa -out $CLIENT_PRIKEY $RSA_KEY_BITS
     openssl req -new -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -out $CLIENT_CSR
     openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -set_serial 2 -out $CLIENT_CRT
     # verify
