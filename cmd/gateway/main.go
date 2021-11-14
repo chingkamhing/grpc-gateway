@@ -2,37 +2,46 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 
 	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go"
 )
 
-const host = "0.0.0.0"
-const port = 8000
-const proxyHost = "proxy"
-const proxyPort = 9000
-const caFile = "deploy/cert/localhost/ca.crt"
+//
+// Reference:
+// - mTLS: https://github.com/islishude/grpc-mtls-example
+//
+
+const serverAddr = "0.0.0.0:8000"
+const proxyAddr = "proxy9000"
+const caFile = "certs/localhost/ca.crt"
+const crtFile = "certs/localhost/client-localhost.crt"
+const keyFile = "certs/localhost/client-localhost.key"
 
 // create gateway service
 func main() {
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
-	// creds, err := credentials.NewClientTLSFromFile(caFile, "localhost")
-	// if err != nil {
-	// 	log.Fatalf("failed to load credentials: %v", err)
-	// }
+	tlsCredentials, err := loadTLSCredentials(caFile, crtFile, keyFile)
+	if err != nil {
+		log.Fatalln("load TLS credentials error:", err)
+	}
 	gatewayOptions := []grpc.DialOption{
 		grpc.WithChainUnaryInterceptor(authInterceptor),
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
-		grpc.WithInsecure(),
+		grpc.WithTransportCredentials(tlsCredentials),
 	}
-	gatewayConn, err := grpc.DialContext(context.Background(), fmt.Sprintf("%s:%d", proxyHost, proxyPort), gatewayOptions...)
+	gatewayConn, err := grpc.DialContext(context.Background(), proxyAddr, gatewayOptions...)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}
@@ -51,11 +60,32 @@ func main() {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 	gwServer := &http.Server{
-		Addr:    fmt.Sprintf("%s:%d", host, port),
+		Addr:    serverAddr,
 		Handler: gwMux,
 	}
-	log.Printf("Serving http gateway on http://%s:%d\n", host, port)
+	log.Printf("Serving http gateway on http://%s\n", serverAddr)
 	log.Fatalln(gwServer.ListenAndServe())
+}
+
+func loadTLSCredentials(caFile, crtFile, keyFile string) (credentials.TransportCredentials, error) {
+	certificate, err := tls.LoadX509KeyPair(crtFile, keyFile)
+	if err != nil {
+		return nil, fmt.Errorf("load certification error: %w", err)
+	}
+	// Load certificate of the CA who signed server's certificate
+	ca, err := ioutil.ReadFile(caFile)
+	if err != nil {
+		return nil, err
+	}
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(ca) {
+		return nil, fmt.Errorf("failed to add server CA's certificate")
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{certificate},
+		RootCAs:      certPool,
+	}
+	return credentials.NewTLS(config), nil
 }
 
 // authInterceptor authenticate endpoint access
