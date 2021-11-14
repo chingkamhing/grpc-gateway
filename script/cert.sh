@@ -28,7 +28,7 @@ ORGANIZATION_UNIT="PTS"
 EMAIL="pts@tradelink.com.hk"
 RSA_KEY_BITS=2048
 CA_DAYS=3660
-CERT_DAYS=1100
+CERT_DAYS=3660
 
 # Function
 SCRIPT_NAME=${0##*/}
@@ -150,8 +150,8 @@ openssl genrsa -out $CAKEY $RSA_KEY_BITS
 openssl req -new -x509 -sha256 -days $CA_DAYS -key $CAKEY -out $CACRT -subj $SUBJECT_CA
 
 # use the ca to create server cert and private key
-openssl genrsa -out $SERVER_PRIKEY $RSA_KEY_BITS
-openssl req -new -sha256 -key $SERVER_PRIKEY -out $SERVER_CSR -subj $SUBJECT_SERVER
+openssl genrsa $RSA_KEY_BITS -out $SERVER_PRIKEY
+openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -out $SERVER_CSR
 openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -set_serial 1 -out $SERVER_CRT
 
 # verify
@@ -160,8 +160,8 @@ openssl verify -CAfile $CACRT $SERVER_CRT
 
 if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
     # use the ca to create client cert and private key
-    openssl genrsa -out $CLIENT_PRIKEY $RSA_KEY_BITS
-    openssl req -new -key $CLIENT_PRIKEY -out $CLIENT_CSR -subj $SUBJECT_CLIENT
+    openssl genrsa $RSA_KEY_BITS -out $CLIENT_PRIKEY
+    openssl req -new -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -out $CLIENT_CSR
     openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -set_serial 2 -out $CLIENT_CRT
     # verify
     echo "Verify client cert $DOMAIN"
@@ -172,11 +172,11 @@ fi
 # view the CSR and certificate
 if [ "$VIEW_OUTPUT" == "yes" ]; then
     echo $CACRT:
-    openssl x509 -in $CACRT -noout -text
+    openssl x509 -noout -text -in $CACRT
     echo $SERVER_CRT:
-    openssl x509 -in $SERVER_CRT -noout -text
+    openssl x509 -noout -text -in $SERVER_CRT
     if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
         echo $CLIENT_CRT:
-        openssl x509 -in $CLIENT_CRT -noout -text
+        openssl x509 -noout -text -in $CLIENT_CRT
     fi
 fi
