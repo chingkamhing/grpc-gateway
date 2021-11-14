@@ -109,22 +109,22 @@ fi
 # seperate arguments to domain and ip address
 DOMAINS=()
 IP_ADDRESSES=()
-SAN=""
+SAN_NAMES=""
 for arg in "$@"; do
     IsIpAddress $arg
     if [ "$?" != "0" ]; then
         DOMAINS+=($arg)
-        SAN=$([ "$SAN" == "" ] && echo "DNS:$arg" || echo "$SAN,DNS:$arg")
+        SAN_NAMES=$([ "$SAN_NAMES" == "" ] && echo "DNS:$arg" || echo "$SAN_NAMES,DNS:$arg")
     else
         IP_ADDRESSES+=($arg)
-        SAN=$([ "$SAN" == "" ] && echo "IP:$arg" || echo "$SAN,IP:$arg")
+        SAN_NAMES=$([ "$SAN_NAMES" == "" ] && echo "IP:$arg" || echo "$SAN_NAMES,IP:$arg")
     fi
 done
 CONFIG=$(cat <<EOF
 [req]
 distinguished_name=req
 [san]
-subjectAltName=$SAN
+subjectAltName=$SAN_NAMES
 EOF
 )
 
