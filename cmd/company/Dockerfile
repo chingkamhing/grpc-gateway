@@ -1,6 +1,6 @@
 ARG DOCKER_ID
 
-FROM golang:1.16-alpine AS builder
+FROM golang:1.17-alpine AS builder
 
 # Download dependencies
 RUN mkdir -p ${GOPATH}/src/app/cmd/company && \

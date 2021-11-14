@@ -1,6 +1,6 @@
 ARG DOCKER_ID
 
-FROM golang:1.16-alpine AS builder
+FROM golang:1.17-alpine AS builder
 
 # Download dependencies
 RUN mkdir -p ${GOPATH}/src/app/cmd/company && \
@@ -21,7 +21,7 @@ FROM alpine:3.14 as production
 # Copy our static executable.
 WORKDIR /app
 COPY --from=builder /go/src/app/main ./main
-COPY ./deploy ./deploy
+COPY ./certs ./certs
 # Run application
 ENTRYPOINT ["/app/main"]
 
