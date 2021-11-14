@@ -124,12 +124,12 @@ fi
 DOMAIN=${DOMAINS[0]}
 CAKEY="${OUTPUT_PATH}/ca.key"
 CACRT="${OUTPUT_PATH}/ca.crt"
-SERVER_PRIKEY="${OUTPUT_PATH}/${DOMAIN}.key"
-SERVER_CSR="${OUTPUT_PATH}/${DOMAIN}.csr"
-SERVER_CRT="${OUTPUT_PATH}/${DOMAIN}.crt"
-CLIENT_PRIKEY="${OUTPUT_PATH}/client-${DOMAIN}.key"
-CLIENT_CSR="${OUTPUT_PATH}/client-${DOMAIN}.csr"
-CLIENT_CRT="${OUTPUT_PATH}/client-${DOMAIN}.crt"
+SERVER_PRIKEY="${OUTPUT_PATH}/server.key"
+SERVER_CSR="${OUTPUT_PATH}/server.csr"
+SERVER_CRT="${OUTPUT_PATH}/server.crt"
+CLIENT_PRIKEY="${OUTPUT_PATH}/client.key"
+CLIENT_CSR="${OUTPUT_PATH}/client.csr"
+CLIENT_CRT="${OUTPUT_PATH}/client.crt"
 CN="$DOMAIN"
 
 # subject for root certificate
