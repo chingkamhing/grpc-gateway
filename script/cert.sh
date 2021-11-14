@@ -7,12 +7,16 @@
 # .key can be any kind of key, but usually it is the private key - OpenSSL can wrap private keys for all algorithms (RSA, DSA, EC) in a generic and standard PKCS#8 structure, but it also supports a separate 'legacy' structure for each algorithm, and both are still widely used even though the documentation has marked PKCS#8 as superior for almost 20 years; both can be stored as DER (binary) or PEM encoded, and both PEM and PKCS#8 DER can protect the key with password-based encryption or be left unencrypted;
 # .csr or .req or sometimes .p10 stands for Certificate Signing Request as defined in PKCS#10; it contains information such as the public key and common name required by a Certificate Authority to create and sign a certificate for the requester, the encoding could be PEM or DER (which is a binary encoding of an ASN.1 specified structure);
 # .crt or .cer stands simply for certificate, usually an X509v3 certificate, again the encoding could be PEM or DER; a certificate contains the public key, but it contains much more information (most importantly the signature by the Certificate Authority over the data and public key, of course).
+# [2021-11-14]:
+# - grpc has this error "x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0"
+# - found that after golang 1.15.0, need to use SAN instead of CN as it will be deprecated
 #
 # Reference:
 # - https://gist.github.com/cecilemuller/9492b848eb8fe46d462abeb26656c4f8
 # - https://stackoverflow.com/questions/7580508/getting-chrome-to-accept-self-signed-localhost-certificate
 # - https://github.com/FiloSottile/mkcert
 # - https://downey.io/notes/dev/curl-using-mutual-tls/
+# - https://medium.com/@groksrc/create-an-openssl-self-signed-san-cert-in-a-single-command-627fd771f25
 #
 
 DIRNAME=$(dirname $0)
@@ -105,14 +109,24 @@ fi
 # seperate arguments to domain and ip address
 DOMAINS=()
 IP_ADDRESSES=()
+SAN=""
 for arg in "$@"; do
     IsIpAddress $arg
     if [ "$?" != "0" ]; then
         DOMAINS+=($arg)
+        SAN=$([ "$SAN" == "" ] && echo "DNS:$arg" || echo "$SAN,DNS:$arg")
     else
         IP_ADDRESSES+=($arg)
+        SAN=$([ "$SAN" == "" ] && echo "IP:$arg" || echo "$SAN,IP:$arg")
     fi
 done
+CONFIG=$(cat <<EOF
+[req]
+distinguished_name=req
+[san]
+subjectAltName=$SAN
+EOF
+)
 
 # create output directory
 if [ ! -d "${OUTPUT_PATH}" ]; then
@@ -152,8 +166,8 @@ $DEBUG openssl req -new -x509 -sha256 -days $CA_DAYS -key $CAKEY -out $CACRT -su
 
 # use the ca to create server cert and private key
 $DEBUG openssl genrsa -out $SERVER_PRIKEY $RSA_KEY_BITS
-$DEBUG openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -out $SERVER_CSR
-$DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -set_serial 1 -out $SERVER_CRT
+$DEBUG openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -config <( echo "$CONFIG") -extensions san -out $SERVER_CSR
+$DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -extfile <( echo "$CONFIG") -extensions san -set_serial 1 -out $SERVER_CRT
 
 # verify
 echo "Verify server cert $DOMAIN"
@@ -162,8 +176,8 @@ $DEBUG openssl verify -CAfile $CACRT $SERVER_CRT
 if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
     # use the ca to create client cert and private key
     $DEBUG openssl genrsa -out $CLIENT_PRIKEY $RSA_KEY_BITS
-    $DEBUG openssl req -new -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -out $CLIENT_CSR
-    $DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -set_serial 2 -out $CLIENT_CRT
+    $DEBUG openssl req -new -sha256 -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -config <( echo "$CONFIG") -extensions san -out $CLIENT_CSR
+    $DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -extfile <( echo "$CONFIG") -extensions san -set_serial 2 -out $CLIENT_CRT
     # verify
     echo "Verify client cert $DOMAIN"
     $DEBUG openssl verify -CAfile $CACRT $CLIENT_CRT
