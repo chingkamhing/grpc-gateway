@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -23,13 +24,16 @@ import (
 //
 
 const serverAddr = "0.0.0.0:8000"
-const proxyAddr = "proxy9000"
+const proxyAddr = "proxy:9000"
 const caFile = "certs/localhost/ca.crt"
-const crtFile = "certs/localhost/client-localhost.crt"
-const keyFile = "certs/localhost/client-localhost.key"
+const crtFile = "certs/localhost/client.crt"
+const keyFile = "certs/localhost/client.key"
+
+var isGRPSSecure = env("GRPC_SECURE", "no")
 
 // create gateway service
 func main() {
+	log.Printf("isGRPSSecure: %v", isGRPSSecure)
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	tlsCredentials, err := loadTLSCredentials(caFile, crtFile, keyFile)
@@ -38,8 +42,12 @@ func main() {
 	}
 	gatewayOptions := []grpc.DialOption{
 		grpc.WithChainUnaryInterceptor(authInterceptor),
+	}
+	if isGRPSSecure == "yes" {
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
-		grpc.WithTransportCredentials(tlsCredentials),
+		gatewayOptions = append(gatewayOptions, grpc.WithTransportCredentials(tlsCredentials))
+	} else {
+		gatewayOptions = append(gatewayOptions, grpc.WithInsecure())
 	}
 	gatewayConn, err := grpc.DialContext(context.Background(), proxyAddr, gatewayOptions...)
 	if err != nil {
@@ -108,4 +116,12 @@ func authInterceptor(ctx context.Context, method string, req, reply interface{},
 	}
 	log.Printf("req: %#v", req)
 	return invoker(ctx, method, req, reply, cc, opts...)
+}
+
+func env(key, defaultValue string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	return value
 }

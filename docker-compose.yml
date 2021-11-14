@@ -1,5 +1,10 @@
 version: "3.8"
 
+# extension field for YAML anchor definition
+x-env: &comm_env
+  environment:
+    - GRPC_SECURE="yes"
+
 services:
   #
   # gateway
@@ -10,6 +15,7 @@ services:
       dockerfile: ./cmd/gateway/Dockerfile
     image: ${DOCKER_ID}/srv-gateway:latest
     restart: always
+    <<: *comm_env
     networks:
       - net
     ports:
@@ -23,6 +29,7 @@ services:
       dockerfile: ./cmd/proxy/Dockerfile
     image: ${DOCKER_ID}/srv-proxy:latest
     restart: always
+    <<: *comm_env
     networks:
       - net
   #
@@ -34,6 +41,7 @@ services:
       dockerfile: ./cmd/user/Dockerfile
     image: ${DOCKER_ID}/srv-user:latest
     restart: always
+    <<: *comm_env
     networks:
       - net
   #
@@ -45,6 +53,7 @@ services:
       dockerfile: ./cmd/company/Dockerfile
     image: ${DOCKER_ID}/srv-company:latest
     restart: always
+    <<: *comm_env
     networks:
       - net
 

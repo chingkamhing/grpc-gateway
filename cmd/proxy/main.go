@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -25,11 +26,14 @@ const serverAddr = "0.0.0.0:9000"
 const userAddr = "user:9000"
 const companyAddr = "company:9000"
 const caFile = "certs/localhost/ca.crt"
-const crtFile = "certs/localhost/localhost.crt"
-const keyFile = "certs/localhost/localhost.key"
+const crtFile = "certs/localhost/server.crt"
+const keyFile = "certs/localhost/server.key"
+
+var isGRPSSecure = env("GRPC_SECURE", "no")
 
 // create gateway service
 func main() {
+	log.Printf("isGRPSSecure: %v", isGRPSSecure)
 	serviceOptions := []grpc.DialOption{
 		grpc.WithInsecure(),
 	}
@@ -54,9 +58,11 @@ func main() {
 		log.Fatalln("load TLS credentials error:", err)
 	}
 	serverOptions := []grpc.ServerOption{
-		// Enable TLS for all incoming connections.
-		grpc.Creds(tlsCredentials),
 		grpc.UnaryInterceptor(middlewareLog),
+	}
+	if isGRPSSecure == "yes" {
+		// Enable TLS for all incoming connections.
+		serverOptions = append(serverOptions, grpc.Creds(tlsCredentials))
 	}
 	server := grpc.NewServer(serverOptions...)
 	// Attach the Greeter service to the server
@@ -99,4 +105,12 @@ func middlewareLog(ctx context.Context, req interface{}, info *grpc.UnaryServerI
 		}
 	}
 	return handler(ctx, req)
+}
+
+func env(key, defaultValue string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	return value
 }
