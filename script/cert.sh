@@ -18,6 +18,7 @@
 DIRNAME=$(dirname $0)
 OUTPUT_PATH=$DIRNAME
 NUM_ARGS=1
+DEBUG=""
 
 # settings
 COUNTRY="HK"
@@ -145,38 +146,37 @@ SUBJECT_CLIENT="\
 /CN=${CN}-client/emailAddress=${EMAIL}"
 
 # This creates a new private key with a password for the CA (flag aes256 require AES256 password protect)
-openssl genrsa -out $CAKEY $RSA_KEY_BITS
+$DEBUG openssl genrsa -out $CAKEY $RSA_KEY_BITS
 # Now we can create the root CA certificate using the SHA256 hash algorithm
-openssl req -new -x509 -sha256 -days $CA_DAYS -key $CAKEY -out $CACRT -subj $SUBJECT_CA
+$DEBUG openssl req -new -x509 -sha256 -days $CA_DAYS -key $CAKEY -out $CACRT -subj $SUBJECT_CA
 
 # use the ca to create server cert and private key
-openssl genrsa -out $SERVER_PRIKEY $RSA_KEY_BITS
-openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -out $SERVER_CSR
-openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -set_serial 1 -out $SERVER_CRT
+$DEBUG openssl genrsa -out $SERVER_PRIKEY $RSA_KEY_BITS
+$DEBUG openssl req -new -sha256 -key $SERVER_PRIKEY -subj $SUBJECT_SERVER -out $SERVER_CSR
+$DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $SERVER_CSR -CA $CACRT -CAkey $CAKEY -set_serial 1 -out $SERVER_CRT
 
 # verify
 echo "Verify server cert $DOMAIN"
-openssl verify -CAfile $CACRT $SERVER_CRT
+$DEBUG openssl verify -CAfile $CACRT $SERVER_CRT
 
 if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
     # use the ca to create client cert and private key
-    openssl genrsa -out $CLIENT_PRIKEY $RSA_KEY_BITS
-    openssl req -new -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -out $CLIENT_CSR
-    openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -set_serial 2 -out $CLIENT_CRT
+    $DEBUG openssl genrsa -out $CLIENT_PRIKEY $RSA_KEY_BITS
+    $DEBUG openssl req -new -key $CLIENT_PRIKEY -subj $SUBJECT_CLIENT -out $CLIENT_CSR
+    $DEBUG openssl x509 -req -sha256 -days $CERT_DAYS -in $CLIENT_CSR -CA $CACRT -CAkey $CAKEY -set_serial 2 -out $CLIENT_CRT
     # verify
     echo "Verify client cert $DOMAIN"
-    openssl verify -CAfile $CACRT $CLIENT_CRT
+    $DEBUG openssl verify -CAfile $CACRT $CLIENT_CRT
 fi
-
 
 # view the CSR and certificate
 if [ "$VIEW_OUTPUT" == "yes" ]; then
     echo $CACRT:
-    openssl x509 -noout -text -in $CACRT
+    $DEBUG openssl x509 -noout -text -in $CACRT
     echo $SERVER_CRT:
-    openssl x509 -noout -text -in $SERVER_CRT
+    $DEBUG openssl x509 -noout -text -in $SERVER_CRT
     if [ "$GENERATE_CLIENT_CERT" == "yes" ]; then
         echo $CLIENT_CRT:
-        openssl x509 -noout -text -in $CLIENT_CRT
+        $DEBUG openssl x509 -noout -text -in $CLIENT_CRT
     fi
 fi
