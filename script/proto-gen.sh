@@ -31,7 +31,7 @@ GenerateProto () {
 	[ -d ${output_dir}/${service} ] || mkdir -p ${output_dir}/${service}
 	IsServiceGateway $service
 	if [ $_RESULT == true ]; then
-		local option_gateway="--grpc-gateway_out ${output_dir} --grpc-gateway_opt paths=source_relative --swagger_out ${output_dir} --swagger_opt allow_merge=true,merge_file_name=${service}"
+		local option_gateway="--grpc-gateway_out ${output_dir} --grpc-gateway_opt paths=source_relative --openapiv2_out ${output_dir} --openapiv2_opt allow_merge=true,merge_file_name=${service}"
 	fi
     for file in *.proto; do
 		[ -d ${output_dir}/tm2-proto-${service}-go ] || mkdir -p ${output_dir}/tm2-proto-${service}-go
