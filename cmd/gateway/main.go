@@ -29,11 +29,11 @@ const caFile = "certs/localhost/ca.crt"
 const crtFile = "certs/localhost/client.crt"
 const keyFile = "certs/localhost/client.key"
 
-var isGRPSSecure = env("GRPC_SECURE", "no")
+var isGRPCSecure = env("GRPC_SECURE", "no")
 
 // create gateway service
 func main() {
-	log.Printf("isGRPSSecure: %v", isGRPSSecure)
+	log.Printf("isGRPCSecure: %v", isGRPCSecure)
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	tlsCredentials, err := loadTLSCredentials(caFile, crtFile, keyFile)
@@ -43,7 +43,7 @@ func main() {
 	gatewayOptions := []grpc.DialOption{
 		grpc.WithChainUnaryInterceptor(authInterceptor),
 	}
-	if isGRPSSecure == "yes" {
+	if isGRPCSecure == "yes" {
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
 		gatewayOptions = append(gatewayOptions, grpc.WithTransportCredentials(tlsCredentials))
 	} else {
