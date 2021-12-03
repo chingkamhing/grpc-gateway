@@ -4,7 +4,7 @@
 #
 
 # https://github.com/protocolbuffers/protobuf/releases/
-PROTOC_VER="3.17.3"
+PROTOC_VER="3.19.1"
 PROTOC_ZIP="protoc-${PROTOC_VER}-linux-x86_64.zip"
 INSTALL_DIR="${HOME}/.local"
 
