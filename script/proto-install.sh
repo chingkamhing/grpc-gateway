@@ -43,10 +43,16 @@ if [ "$#" -ne "$NUM_ARGS" ]; then
 fi
 
 # install protoc
-curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VER}/${PROTOC_ZIP}
-unzip -o $PROTOC_ZIP -d ${INSTALL_DIR} bin/protoc
-unzip -o $PROTOC_ZIP -d ${INSTALL_DIR}/bin 'include/*'
-rm -f $PROTOC_ZIP
+protoc_ver=$(protoc --version | awk '{ print $2 }')
+if [ "$protoc_ver" != "$PROTOC_VER" ]; then
+	echo "Install protoc $PROTOC_VER..."
+	curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VER}/${PROTOC_ZIP}
+	unzip -o $PROTOC_ZIP -d ${INSTALL_DIR} bin/protoc
+	unzip -o $PROTOC_ZIP -d ${INSTALL_DIR}/bin 'include/*'
+	rm -f $PROTOC_ZIP
+else
+	echo "Current protoc is already $PROTOC_VER, no need to install."
+fi
 
 # update/download necessary proto files
 if [ -d ${GOPATH}/src/github.com/grpc-ecosystem ]; then
