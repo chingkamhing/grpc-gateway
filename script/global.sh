@@ -3,7 +3,6 @@
 # Script to define some global variables.
 #
 
-PROTO_DIR="proto"
+SERVICES=( "gateway" "user" "company" )
 OUTPUT_DIR="lib"
-GATEWAY=( "gateway" )
-SERVICES=( ${GATEWAY[@]} "user" "company" )
+OUTPUT_FILE_PREFIX="tm2-proto"
