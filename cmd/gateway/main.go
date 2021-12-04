@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 
-	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-gateway-go"
+	tm2_proto_gateway_go "github.com/chingkamhing/grpc-gateway/gen/srv-proto-gateway-go"
 )
 
 //

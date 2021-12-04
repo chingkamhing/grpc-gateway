@@ -1,6 +1,6 @@
 syntax = "proto3";
 package company;
-option go_package = "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-company-go;tm2_proto_company_go";
+option go_package = "github.com/chingkamhing/grpc-gateway/gen/srv-proto-company-go;tm2_proto_company_go";
 
 // Company
 

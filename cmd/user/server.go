@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	tm2_proto_user_go "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-user-go"
+	tm2_proto_user_go "github.com/chingkamhing/grpc-gateway/gen/srv-proto-user-go"
 )
 
 type server struct {

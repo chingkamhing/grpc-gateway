@@ -5,4 +5,4 @@
 
 SERVICES=( "gateway" "user" "company" )
 OUTPUT_DIR="gen"
-OUTPUT_FILE_PREFIX="tm2-proto"
+OUTPUT_FILE_PREFIX="srv-proto"

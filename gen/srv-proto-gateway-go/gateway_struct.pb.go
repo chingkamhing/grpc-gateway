@@ -7,8 +7,8 @@
 package tm2_proto_gateway_go
 
 import (
-	tm2_proto_company_go "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-company-go"
-	tm2_proto_user_go "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-user-go"
+	srv_proto_company_go "github.com/chingkamhing/grpc-gateway/gen/srv-proto-company-go"
+	srv_proto_user_go "github.com/chingkamhing/grpc-gateway/gen/srv-proto-user-go"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -27,8 +27,8 @@ type UserDetail struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	User    *tm2_proto_user_go.UserInfo       `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
-	Company *tm2_proto_company_go.CompanyInfo `protobuf:"bytes,2,opt,name=company,proto3" json:"company,omitempty"`
+	User    *srv_proto_user_go.UserInfo       `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Company *srv_proto_company_go.CompanyInfo `protobuf:"bytes,2,opt,name=company,proto3" json:"company,omitempty"`
 }
 
 func (x *UserDetail) Reset() {
@@ -63,14 +63,14 @@ func (*UserDetail) Descriptor() ([]byte, []int) {
 	return file_gateway_gateway_struct_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *UserDetail) GetUser() *tm2_proto_user_go.UserInfo {
+func (x *UserDetail) GetUser() *srv_proto_user_go.UserInfo {
 	if x != nil {
 		return x.User
 	}
 	return nil
 }
 
-func (x *UserDetail) GetCompany() *tm2_proto_company_go.CompanyInfo {
+func (x *UserDetail) GetCompany() *srv_proto_company_go.CompanyInfo {
 	if x != nil {
 		return x.Company
 	}
@@ -94,7 +94,7 @@ var file_gateway_gateway_struct_proto_rawDesc = []byte{
 	0x6e, 0x79, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x70, 0x61, 0x6e, 0x79, 0x42,
 	0x54, 0x5a, 0x52, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x68,
 	0x69, 0x6e, 0x67, 0x6b, 0x61, 0x6d, 0x68, 0x69, 0x6e, 0x67, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d,
-	0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x74, 0x6d, 0x32, 0x2d,
+	0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x73, 0x72, 0x76, 0x2d,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2d, 0x67, 0x6f,
 	0x3b, 0x74, 0x6d, 0x32, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x5f, 0x67, 0x61, 0x74, 0x65, 0x77,
 	0x61, 0x79, 0x5f, 0x67, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
@@ -115,8 +115,8 @@ func file_gateway_gateway_struct_proto_rawDescGZIP() []byte {
 var file_gateway_gateway_struct_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_gateway_gateway_struct_proto_goTypes = []interface{}{
 	(*UserDetail)(nil),                       // 0: gateway.UserDetail
-	(*tm2_proto_user_go.UserInfo)(nil),       // 1: user.UserInfo
-	(*tm2_proto_company_go.CompanyInfo)(nil), // 2: company.CompanyInfo
+	(*srv_proto_user_go.UserInfo)(nil),       // 1: user.UserInfo
+	(*srv_proto_company_go.CompanyInfo)(nil), // 2: company.CompanyInfo
 }
 var file_gateway_gateway_struct_proto_depIdxs = []int32{
 	1, // 0: gateway.UserDetail.user:type_name -> user.UserInfo
