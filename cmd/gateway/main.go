@@ -98,12 +98,14 @@ func loadTLSCredentials(caFile, crtFile, keyFile string) (credentials.TransportC
 
 // authInterceptor authenticate endpoint access
 func authInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	log.Printf("req: %#v", req)
 	// get out bound metadata
 	md, ok := metadata.FromOutgoingContext(ctx)
 	if !ok {
+		log.Printf("no md for method: %v", method)
 		return invoker(ctx, method, req, reply, cc, opts...)
 	}
-	log.Printf("md: %#v", md)
+	log.Printf("method %v md: %#v", method, md)
 	// check if authorization is needed
 	auths, ok := md["authorization"]
 	if !ok {
@@ -114,7 +116,6 @@ func authInterceptor(ctx context.Context, method string, req, reply interface{},
 		//FIXME, check authorization here
 		log.Printf("auth: %#v", auth)
 	}
-	log.Printf("req: %#v", req)
 	return invoker(ctx, method, req, reply, cc, opts...)
 }
 
