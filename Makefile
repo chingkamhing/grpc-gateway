@@ -54,8 +54,8 @@ build:
 update:
 	@for service in $(SERVICES) ; do \
 		echo "Updating $$service..." ; \
-		go get -u ./...
-		go mod tidy
+		go get -u ./... ; \
+		go mod tidy ; \
 	done
 
 .PHONY: test
