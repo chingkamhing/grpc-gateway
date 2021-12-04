@@ -7,7 +7,6 @@ DIR="$(dirname "${0}")"
 source ${DIR}/global.sh
 
 PROTO_DIR="proto"
-OUTPUT_FILE_PREFIX="tm2-proto"
 OUTPUT_LANG_FILE="proto-output"
 IS_COMMON_JS="no"
 COMMON_JS="import_style=commonjs"
