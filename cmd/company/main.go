@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	tm2_proto_company_go "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-company-go"
+	tm2_proto_company_go "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-company-go"
 )
 
 const host = "0.0.0.0:9000"

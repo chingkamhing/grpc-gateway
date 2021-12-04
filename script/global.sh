@@ -4,5 +4,5 @@
 #
 
 SERVICES=( "gateway" "user" "company" )
-OUTPUT_DIR="lib"
+OUTPUT_DIR="gen"
 OUTPUT_FILE_PREFIX="tm2-proto"

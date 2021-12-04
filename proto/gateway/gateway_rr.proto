@@ -1,6 +1,6 @@
 syntax = "proto3";
 package gateway;
-option go_package = "github.com/chingkamhing/grpc-gateway/lib/tm2-proto-gateway-go;tm2_proto_gateway_go";
+option go_package = "github.com/chingkamhing/grpc-gateway/gen/tm2-proto-gateway-go;tm2_proto_gateway_go";
 
 import "gateway/gateway_struct.proto";
 

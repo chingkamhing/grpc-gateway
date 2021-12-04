@@ -12,7 +12,7 @@ RUN go mod download
 RUN go mod verify
 # Build binary
 COPY ./cmd/gateway ./cmd/gateway
-COPY ./lib ./lib
+COPY ./gen ./gen
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -installsuffix cgo -o main ./cmd/gateway
 
 # Build minimum image
