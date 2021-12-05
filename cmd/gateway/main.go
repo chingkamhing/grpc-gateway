@@ -4,12 +4,15 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/go-openapi/analysis"
+	"github.com/go-openapi/spec"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -40,8 +43,17 @@ func main() {
 	if err != nil {
 		log.Fatalln("load TLS credentials error:", err)
 	}
+	var specGateway spec.Swagger
+	data, err := os.ReadFile("./gen/srv-proto-gateway-go/gateway.swagger.json")
+	if err != nil {
+		log.Fatalln("Failed to read swager file:", err)
+	}
+	err = json.Unmarshal(data, &specGateway)
+	if err != nil {
+		log.Fatalln("Failed to json.Unmarshal:", err)
+	}
 	gatewayOptions := []grpc.DialOption{
-		grpc.WithChainUnaryInterceptor(authInterceptor),
+		grpc.WithChainUnaryInterceptor(authInterceptor(specGateway)),
 	}
 	if isGRPCSecure == "yes" {
 		// oauth.NewOauthAccess requires the configuration of transport credentials.
@@ -97,26 +109,36 @@ func loadTLSCredentials(caFile, crtFile, keyFile string) (credentials.TransportC
 }
 
 // authInterceptor authenticate endpoint access
-func authInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-	log.Printf("req: %#v", req)
-	// get out bound metadata
-	md, ok := metadata.FromOutgoingContext(ctx)
-	if !ok {
-		log.Printf("no md for method: %v", method)
+func authInterceptor(specGateway spec.Swagger) grpc.UnaryClientInterceptor {
+	a := analysis.New(&specGateway)
+	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		log.Printf("req: %#v", req)
+		// get out bound metadata
+		md, ok := metadata.FromOutgoingContext(ctx)
+		if !ok {
+			log.Printf("no md for method: %v", method)
+			return invoker(ctx, method, req, reply, cc, opts...)
+		}
+		methods := md["x-forwarded-method"]
+		paths := md["x-forwarded-url-path"]
+		log.Printf("methods: %v", methods[0])
+		log.Printf("paths: %v", paths[0])
+		operation, ok := a.OperationFor(methods[0], paths[0])
+		if ok {
+			log.Printf("security: %v", a.SecurityRequirementsFor(operation))
+		}
+		// check if authorization is needed
+		auths, ok := md["authorization"]
+		if !ok {
+			return invoker(ctx, method, req, reply, cc, opts...)
+		}
+		// need authorization
+		for _, auth := range auths {
+			//FIXME, check authorization here
+			log.Printf("auth: %#v", auth)
+		}
 		return invoker(ctx, method, req, reply, cc, opts...)
 	}
-	log.Printf("method %v md: %#v", method, md)
-	// check if authorization is needed
-	auths, ok := md["authorization"]
-	if !ok {
-		return invoker(ctx, method, req, reply, cc, opts...)
-	}
-	// need authorization
-	for _, auth := range auths {
-		//FIXME, check authorization here
-		log.Printf("auth: %#v", auth)
-	}
-	return invoker(ctx, method, req, reply, cc, opts...)
 }
 
 func env(key, defaultValue string) string {

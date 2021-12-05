@@ -16,6 +16,8 @@ services:
     image: ${DOCKER_ID}/srv-gateway:latest
     restart: always
     <<: *comm_env
+    volumes:
+      - ${PWD}/gen/srv-proto-gateway-go/gateway.swagger.json:/app/gen/srv-proto-gateway-go/gateway.swagger.json
     networks:
       - net
     ports:
