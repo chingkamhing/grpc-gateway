@@ -125,7 +125,10 @@ func authInterceptor(specGateway spec.Swagger) grpc.UnaryClientInterceptor {
 		log.Printf("paths: %v", paths[0])
 		operation, ok := a.OperationFor(methods[0], paths[0])
 		if ok {
-			log.Printf("security: %v", a.SecurityRequirementsFor(operation))
+			definations := a.SecurityDefinitionsFor(operation)
+			for k, v := range definations {
+				log.Printf("definations[%v]: %#v", k, v)
+			}
 		}
 		// check if authorization is needed
 		auths, ok := md["authorization"]
